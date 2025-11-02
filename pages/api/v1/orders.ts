@@ -1,6 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../lib/prisma";
 import { emailTemplates, sendEmail } from "../../../lib/emailService";
+import { Prisma } from "@prisma/client";
+
+// Type for order with relations
+type OrderWithRelations = Prisma.OrderGetPayload<{
+  include: {
+    orderItems: {
+      include: {
+        product: true;
+      };
+    };
+    customer: true;
+  };
+}>;
 
 export default async function handler(
   req: NextApiRequest,
@@ -63,7 +76,7 @@ export default async function handler(
         typeof totalPrice === "string" ? parseFloat(totalPrice) : totalPrice;
 
       // Create order with order items
-      const newOrder = await prisma.order.create({
+      const newOrder: OrderWithRelations = (await prisma.order.create({
         data: {
           customerId,
           shippingAddress,
@@ -98,7 +111,7 @@ export default async function handler(
           },
           customer: true,
         },
-      });
+      })) as OrderWithRelations;
 
       // Send order confirmation email to customer (non-blocking)
       if (newOrder.customer.email) {
