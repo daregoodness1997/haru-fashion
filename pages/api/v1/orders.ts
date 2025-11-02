@@ -16,16 +16,50 @@ export default async function handler(
         paymentType,
         deliveryType,
         products,
-        sendEmail,
+        sendEmail: shouldSendEmail,
       } = req.body;
 
+      // Debug logging
+      console.log("📦 Creating order with data:", {
+        customerId,
+        shippingAddress,
+        totalPrice,
+        deliveryDate,
+        paymentType,
+        deliveryType,
+        productsCount: products?.length,
+        shouldSendEmail,
+      });
+
       // Validate required fields
-      if (!customerId || !shippingAddress || !totalPrice || !products) {
+      if (
+        !customerId ||
+        !shippingAddress ||
+        totalPrice === undefined ||
+        totalPrice === null ||
+        !products ||
+        !Array.isArray(products) ||
+        products.length === 0
+      ) {
+        console.error("❌ Missing required fields:", {
+          customerId: !!customerId,
+          shippingAddress: !!shippingAddress,
+          totalPrice: totalPrice,
+          products: products,
+          productsLength: products?.length,
+        });
         return res.status(400).json({
           success: false,
-          error: { message: "Missing required fields" },
+          error: {
+            message:
+              "Missing required fields. Products array must not be empty.",
+          },
         });
       }
+
+      // Convert totalPrice to number if it's a string
+      const totalPriceNumber =
+        typeof totalPrice === "string" ? parseFloat(totalPrice) : totalPrice;
 
       // Create order with order items
       const newOrder = await prisma.order.create({
@@ -34,11 +68,11 @@ export default async function handler(
           shippingAddress,
           paymentType: paymentType || "CASH_ON_DELIVERY",
           deliveryType: deliveryType || "STORE_PICKUP",
-          totalPrice,
+          totalPrice: totalPriceNumber,
           deliveryDate: deliveryDate
             ? new Date(deliveryDate)
             : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          sendEmail: sendEmail || false,
+          sendEmail: shouldSendEmail || false,
           orderItems: {
             create: await Promise.all(
               products.map(async (item: { id: number; quantity: number }) => {
@@ -133,9 +167,13 @@ export default async function handler(
       });
     } catch (error) {
       console.error("Error creating order:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
       return res.status(500).json({
         success: false,
-        error: { message: "Failed to create order" },
+        error: {
+          message: "Failed to create order",
+          details: error instanceof Error ? error.message : String(error),
+        },
       });
     }
   } else if (req.method === "GET") {

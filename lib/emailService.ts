@@ -327,6 +327,166 @@ export const emailTemplates = {
 </table>
     `),
   }),
+
+  // Order status update email for customer
+  orderStatusUpdate: (
+    customerName: string,
+    orderNumber: number,
+    status: string,
+    trackingNumber?: string,
+    shippingAddress?: string
+  ) => {
+    // Map status to user-friendly messages
+    const statusMessages: {
+      [key: string]: { title: string; message: string; color: string };
+    } = {
+      pending: {
+        title: "Order Received",
+        message: "We've received your order and will begin processing it soon.",
+        color: "#f59e0b",
+      },
+      processing: {
+        title: "Order Processing",
+        message: "Your order is being prepared for shipment.",
+        color: "#3b82f6",
+      },
+      shipped: {
+        title: "Order Shipped!",
+        message: "Your order has been shipped and is on its way to you.",
+        color: "#8b5cf6",
+      },
+      delivered: {
+        title: "Order Delivered!",
+        message:
+          "Your order has been successfully delivered. Thank you for shopping with us!",
+        color: "#10b981",
+      },
+      cancelled: {
+        title: "Order Cancelled",
+        message:
+          "Your order has been cancelled. If you have any questions, please contact us.",
+        color: "#ef4444",
+      },
+    };
+
+    const statusInfo = statusMessages[status.toLowerCase()] || {
+      title: `Order Status: ${status}`,
+      message: `Your order status has been updated to: ${status}`,
+      color: "#6b7280",
+    };
+
+    return {
+      subject: `${statusInfo.title} - Order #${orderNumber}`,
+      html: getEmailTemplate(`
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center" style="padding:45px 0;">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;background:#F8F8F8;">
+    <tr><td style="padding:60px 50px;">
+      <!-- Logo -->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding-bottom:60px;">
+          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">HARU FASHION</h1>
+        </td></tr>
+      </table>
+      
+      <!-- Status Banner -->
+      <div style="background:${
+        statusInfo.color
+      };color:#FFF;padding:20px;margin-bottom:30px;text-align:center;border-radius:8px;">
+        <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:24px;font-weight:700;color:#FFF;">
+          ${statusInfo.title}
+        </h1>
+      </div>
+      
+      <!-- Greeting -->
+      <p style="margin:0 0 22px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;line-height:22px;">
+        Hi ${customerName},
+      </p>
+      
+      <p style="margin:0 0 22px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;line-height:22px;">
+        ${statusInfo.message}
+      </p>
+      
+      <!-- Order Details -->
+      <div style="background:#FFF;padding:20px;margin:20px 0;border-left:4px solid ${
+        statusInfo.color
+      };">
+        <p style="margin:0 0 10px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+          <strong>Order Number:</strong> #${orderNumber}
+        </p>
+        <p style="margin:0 0 10px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+          <strong>Status:</strong> ${status.toUpperCase()}
+        </p>
+        ${
+          trackingNumber
+            ? `
+        <p style="margin:0 0 10px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+          <strong>Tracking Number:</strong> ${trackingNumber}
+        </p>
+        `
+            : ""
+        }
+        ${
+          shippingAddress
+            ? `
+        <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+          <strong>Shipping Address:</strong><br/>
+          ${shippingAddress}
+        </p>
+        `
+            : ""
+        }
+      </div>
+      
+      ${
+        status.toLowerCase() === "shipped" ||
+        status.toLowerCase() === "processing"
+          ? `
+      <p style="margin:20px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+        You can track your order status anytime by clicking the button below.
+      </p>
+      
+      <!-- Button -->
+      <table role="presentation" cellpadding="0" cellspacing="0">
+        <tr><td style="background:#333;padding:10px;text-align:center;width:250px;">
+          <a href="${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3000"
+          }/orders" style="display:block;font-family:Roboto,Arial,sans-serif;font-size:16px;font-weight:700;color:#FFF;text-decoration:none;">
+            TRACK YOUR ORDER
+          </a>
+        </td></tr>
+      </table>
+      `
+          : ""
+      }
+      
+      ${
+        status.toLowerCase() === "delivered"
+          ? `
+      <p style="margin:20px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+        We hope you love your purchase! If you have any feedback or questions, please don't hesitate to contact us.
+      </p>
+      `
+          : ""
+      }
+      
+      <p style="margin:30px 0 0 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+        Thank you for shopping with Haru Fashion!
+      </p>
+    </td></tr>
+    
+    <!-- Footer -->
+    <tr><td style="background:#242424;padding:48px 50px;text-align:center;">
+      <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:12px;color:#888;">
+        © ${new Date().getFullYear()} Haru Fashion. All rights reserved.
+      </p>
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+      `),
+    };
+  },
 };
 
 // Send email function

@@ -228,7 +228,11 @@ export default function Menu() {
                         href="#"
                         className="flex justify-center items-center py-2 px-4 text-center"
                       >
-                        {locale === "en" ? t("english") : t("myanmar")}{" "}
+                        {locale === "en"
+                          ? t("english")
+                          : locale === "fr"
+                          ? t("french")
+                          : t("spanish")}{" "}
                         <DownArrow />
                       </HMenu.Button>
                       <HMenu.Items
@@ -251,14 +255,27 @@ export default function Menu() {
                         <HMenu.Item>
                           <Link
                             href={asPath}
-                            locale="my"
+                            locale="fr"
                             className={`${
-                              locale === "my"
+                              locale === "fr"
                                 ? "bg-gray200 text-gray500"
                                 : "bg-white text-gray500"
                             } py-2 px-4 text-center focus:outline-none`}
                           >
-                            {t("myanmar")}
+                            {t("french")}
+                          </Link>
+                        </HMenu.Item>
+                        <HMenu.Item>
+                          <Link
+                            href={asPath}
+                            locale="es"
+                            className={`${
+                              locale === "es"
+                                ? "bg-gray200 text-gray500"
+                                : "bg-white text-gray500"
+                            } py-2 px-4 text-center focus:outline-none`}
+                          >
+                            {t("spanish")}
                           </Link>
                         </HMenu.Item>
                       </HMenu.Items>

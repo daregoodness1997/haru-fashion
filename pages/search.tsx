@@ -81,7 +81,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   query: { q = "" },
 }) => {
   const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_PROD_BACKEND_URL}/api/v1/products/search?q=${q}`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products/search?q=${q}`
   );
   const fetchedProducts: apiProductsType[] = res.data.data.map(
     (product: apiProductsType) => ({

@@ -28,6 +28,8 @@ type Order = {
   deliveryType: string;
   deliveryDate: string;
   shippingAddress: string;
+  status: string;
+  trackingNumber?: string;
   orderItems: OrderItem[];
 };
 
@@ -48,22 +50,30 @@ const Orders: React.FC<Props> = ({ orders }) => {
     });
   };
 
-  const getStatusColor = (deliveryDate: string) => {
-    const delivery = new Date(deliveryDate);
-    const now = new Date();
-    if (delivery < now) {
-      return "text-green-600";
+  const getStatusColor = (status: string) => {
+    const statusLower = status.toLowerCase();
+    switch (statusLower) {
+      case "delivered":
+        return "text-green-600";
+      case "shipped":
+        return "text-purple-600";
+      case "processing":
+        return "text-blue-600";
+      case "cancelled":
+        return "text-red-600";
+      default:
+        return "text-orange-600"; // pending
     }
-    return "text-blue-600";
   };
 
-  const getStatusText = (deliveryDate: string) => {
-    const delivery = new Date(deliveryDate);
-    const now = new Date();
-    if (delivery < now) {
-      return t("delivered");
+  const getStatusText = (status: string) => {
+    const statusLower = status.toLowerCase();
+    // Try to get translation, fallback to capitalized status
+    try {
+      return t(statusLower);
+    } catch {
+      return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
     }
-    return t("in_transit");
   };
 
   if (!auth.user) {
@@ -132,11 +142,16 @@ const Orders: React.FC<Props> = ({ orders }) => {
                       </p>
                       <p
                         className={`font-semibold ${getStatusColor(
-                          order.deliveryDate
+                          order.status
                         )}`}
                       >
-                        {t("status")}: {getStatusText(order.deliveryDate)}
+                        {t("status")}: {getStatusText(order.status)}
                       </p>
+                      {order.trackingNumber && (
+                        <p className="text-gray400 mt-1">
+                          {t("tracking")}: {order.trackingNumber}
+                        </p>
+                      )}
                     </div>
                     <div className="mt-4 md:mt-0 text-left md:text-right">
                       <p className="text-2xl font-bold mb-2">

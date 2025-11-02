@@ -86,25 +86,33 @@ const ShoppingCart = () => {
     if (!auth.user) registerUser();
 
     const makeOrder = async () => {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/orders`,
-        {
-          customerId: auth!.user!.id,
-          shippingAddress: shippingAddress ? shippingAddress : address,
-          totalPrice: subtotal,
-          deliveryDate: new Date().setDate(new Date().getDate() + 7),
-          paymentType: paymentMethod,
-          deliveryType: deli,
-          products,
-          sendEmail,
+      try {
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/orders`,
+          {
+            customerId: auth!.user!.id,
+            shippingAddress: shippingAddress ? shippingAddress : address,
+            totalPrice: parseFloat(subtotal as string),
+            deliveryDate: new Date().setDate(new Date().getDate() + 7),
+            paymentType: paymentMethod,
+            deliveryType: deli,
+            products,
+            sendEmail,
+          }
+        );
+        if (res.data.success) {
+          setCompletedOrder(res.data.data);
+          clearCart!();
+          setIsOrdering(false);
+        } else {
+          setOrderError("error_occurs");
+          setIsOrdering(false);
         }
-      );
-      if (res.data.success) {
-        setCompletedOrder(res.data.data);
-        clearCart!();
-        setIsOrdering(false);
-      } else {
+      } catch (error: any) {
+        console.error("Order creation error:", error);
+        console.error("Error response:", error.response?.data);
         setOrderError("error_occurs");
+        setIsOrdering(false);
       }
     };
     if (auth.user) makeOrder();

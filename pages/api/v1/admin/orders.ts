@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import { verifyAdmin, AdminApiRequest } from "../../../../lib/adminMiddleware";
+import { emailTemplates, sendEmail } from "../../../../lib/emailService";
 
 const prisma = new PrismaClient();
 
@@ -116,6 +117,14 @@ export default async function handler(
       // Check if order exists
       const existingOrder = await prisma.order.findUnique({
         where: { id: parseInt(orderId) },
+        include: {
+          customer: true,
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
       });
 
       if (!existingOrder) {
@@ -127,12 +136,19 @@ export default async function handler(
         });
       }
 
+      console.log("📝 Admin updating order:", {
+        orderId,
+        currentStatus: existingOrder.status,
+        newStatus: status,
+        trackingNumber,
+      });
+
       // Update order
       const updatedOrder = await prisma.order.update({
         where: { id: parseInt(orderId) },
         data: {
           ...(status && { status }),
-          ...(trackingNumber && { trackingNumber }),
+          ...(trackingNumber !== undefined && { trackingNumber }),
         },
         include: {
           customer: {
@@ -151,9 +167,58 @@ export default async function handler(
         },
       });
 
+      console.log("✅ Order updated successfully by admin");
+
+      // Send email notification if status changed
+      if (
+        status &&
+        status !== existingOrder.status &&
+        existingOrder.customer.email
+      ) {
+        console.log(
+          "📧 Status changed, sending email notification to customer..."
+        );
+
+        const statusEmailTemplate = emailTemplates.orderStatusUpdate(
+          existingOrder.customer.fullname,
+          existingOrder.orderNumber,
+          status,
+          trackingNumber || existingOrder.trackingNumber,
+          existingOrder.shippingAddress
+        );
+
+        sendEmail(
+          existingOrder.customer.email,
+          statusEmailTemplate.subject,
+          statusEmailTemplate.html
+        )
+          .then((result: any) => {
+            if (result.success) {
+              console.log(
+                `✅ Order status update email sent to: ${existingOrder.customer.email}`
+              );
+            } else {
+              console.error(
+                "❌ Failed to send status update email:",
+                result.error
+              );
+            }
+          })
+          .catch((err: any) => {
+            console.error("❌ Status update email error:", err);
+          });
+      } else {
+        console.log("ℹ️ Email notification skipped:", {
+          statusProvided: !!status,
+          statusChanged: status && status !== existingOrder.status,
+          emailAvailable: !!existingOrder.customer.email,
+        });
+      }
+
       return res.status(200).json({
         success: true,
         data: updatedOrder,
+        message: "Order updated successfully",
       });
     } catch (error) {
       console.error("Error updating order:", error);

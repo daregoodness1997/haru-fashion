@@ -84,7 +84,10 @@ export default async function handler(
           if (result.success) {
             console.log("✅ Admin notification sent to:", adminEmail);
           } else {
-            console.error("❌ Failed to send admin notification:", result.error);
+            console.error(
+              "❌ Failed to send admin notification:",
+              result.error
+            );
           }
         })
         .catch((err) => {

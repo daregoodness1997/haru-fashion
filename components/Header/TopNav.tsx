@@ -10,7 +10,7 @@ import styles from "./Header.module.css";
 
 type LinkProps = {
   href: string;
-  locale: "en" | "my";
+  locale: "en" | "fr" | "es";
   active: boolean;
 };
 
@@ -65,7 +65,8 @@ const TopNav = () => {
           <li>
             <Menu as="div" className="relative">
               <Menu.Button as="a" href="#" className="flex">
-                {locale === "en" ? t("eng") : t("myn")} <DownArrow />
+                {locale === "en" ? "EN" : locale === "fr" ? "FR" : "ES"}{" "}
+                <DownArrow />
               </Menu.Button>
               <Menu.Items
                 className="flex flex-col w-20 right-0 absolute p-1 border border-gray200 bg-white mt-2 outline-none"
@@ -74,14 +75,21 @@ const TopNav = () => {
                 <Menu.Item>
                   {({ active }) => (
                     <MyLink active={active} href={asPath} locale="en">
-                      {t("eng")}
+                      EN
                     </MyLink>
                   )}
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <MyLink active={active} href={asPath} locale="my">
-                      {t("myn")}
+                    <MyLink active={active} href={asPath} locale="fr">
+                      FR
+                    </MyLink>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => (
+                    <MyLink active={active} href={asPath} locale="es">
+                      ES
                     </MyLink>
                   )}
                 </Menu.Item>
