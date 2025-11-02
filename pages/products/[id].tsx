@@ -116,7 +116,7 @@ const Product: React.FC<Props> = ({ product, products }) => {
                 height={1282}
               />
             </div>
-            <div className="w-full sm:w-3/4 h-full m-0 sm:m-4">
+            <div className="w-full sm:w-3/4 h-full m-0 sm:m-4 ">
               <Swiper
                 modules={[Pagination, Navigation, Autoplay]}
                 slidesPerView={1}
@@ -129,7 +129,7 @@ const Product: React.FC<Props> = ({ product, products }) => {
               >
                 <SwiperSlide>
                   <Image
-                    className="each-slide w-full"
+                    className="each-slide w-7/8"
                     src={img1 as string}
                     width={1000}
                     height={1282}
@@ -138,7 +138,7 @@ const Product: React.FC<Props> = ({ product, products }) => {
                 </SwiperSlide>
                 <SwiperSlide>
                   <Image
-                    className="each-slide w-full"
+                    className="each-slide w-7/8"
                     src={img2 as string}
                     width={1000}
                     height={1282}
@@ -146,18 +146,9 @@ const Product: React.FC<Props> = ({ product, products }) => {
                   />
                 </SwiperSlide>
               </Swiper>
-              <div className="hidden sm:block h-full">
-                <Image
-                  className="w-full"
-                  src={mainImg as string}
-                  width={1000}
-                  height={1282}
-                  alt={product.name}
-                />
-              </div>
             </div>
           </div>
-          <div className="infoSection w-full md:w-1/2 h-auto py-8 sm:pl-4 flex flex-col">
+          <div className="infoSection w-full md:w-1/2 h-auto py-8 sm:pl-4 flex flex-col px-4">
             <h1 className="text-3xl mb-4">{product.name}</h1>
             <span className="text-2xl text-gray400 mb-2">
               $ {product.price}
