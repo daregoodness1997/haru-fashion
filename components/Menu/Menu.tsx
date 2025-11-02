@@ -185,6 +185,38 @@ export default function Menu() {
                       </div>
                     </Link>
                     <hr className="border border-gray300 w-full" />
+                    {auth.user && (
+                      <>
+                        {auth.user.isAdmin && (
+                          <>
+                            <Link
+                              href="/admin"
+                              className="text-xl py-2 my-3 w-full flex justify-between bg-yellow-50"
+                              onClick={closeModal}
+                            >
+                              <span>🛡️ {t("admin_dashboard")}</span>
+                            </Link>
+                            <hr className="border border-gray300 w-full" />
+                          </>
+                        )}
+                        <Link
+                          href="/profile"
+                          className="text-xl py-2 my-3 w-full flex justify-between"
+                          onClick={closeModal}
+                        >
+                          <span>{t("edit_profile")}</span>
+                        </Link>
+                        <hr className="border border-gray300 w-full" />
+                        <Link
+                          href="/orders"
+                          className="text-xl py-2 my-3 w-full flex justify-between"
+                          onClick={closeModal}
+                        >
+                          <span>{t("my_orders")}</span>
+                        </Link>
+                        <hr className="border border-gray300 w-full" />
+                      </>
+                    )}
 
                     {/* Locale Dropdown */}
                     <HMenu

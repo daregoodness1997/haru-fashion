@@ -16,7 +16,7 @@ const OverlayContainer: FC<Props> = ({ imgSrc, imgSrc2, imgAlt, children }) => (
           <Image
             className={styles.img}
             src={imgSrc}
-            alt={imgAlt}
+            alt={imgAlt || ""}
             width={858}
             height={414}
             layout="responsive"
@@ -26,7 +26,7 @@ const OverlayContainer: FC<Props> = ({ imgSrc, imgSrc2, imgAlt, children }) => (
           <Image
             className={styles.img}
             src={imgSrc2}
-            alt={imgAlt}
+            alt={imgAlt || ""}
             width={710}
             height={710}
             layout="responsive"
@@ -37,7 +37,7 @@ const OverlayContainer: FC<Props> = ({ imgSrc, imgSrc2, imgAlt, children }) => (
       <Image
         className={styles.img}
         src={imgSrc}
-        alt={imgAlt}
+        alt={imgAlt || ""}
         width={710}
         height={710}
       />

@@ -6,29 +6,44 @@
     "dev": "next dev",
     "lint": "next lint",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
     "@headlessui/react": "^1.0.0",
+    "@prisma/client": "^6.18.0",
     "animate.css": "^4.1.1",
     "axios": "^1.13.1",
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.8.0",
     "cookies-next": "^6.1.1",
+    "multer": "^2.0.2",
     "next": "^16.0.1",
     "next-intl": "^4.4.0",
+    "nodemailer": "^7.0.10",
     "nprogress": "^0.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "swiper": "^12.0.3"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/multer": "^2.0.0",
+    "@types/nodemailer": "^7.0.3",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.3",
     "autoprefixer": "^10.2.5",
     "eslint": "8.9.0",
     "eslint-config-next": "12.1.0",
     "postcss": "^8.2.9",
+    "prisma": "^6.18.0",
     "tailwindcss": "^2.1.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
 }

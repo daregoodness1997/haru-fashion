@@ -1,25 +1,36 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mockProducts } from "../../../../data/mockProducts";
+import prisma from "../../../../lib/prisma";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { category } = req.query;
+  try {
+    const { category } = req.query;
 
-  let filteredProducts = [...mockProducts];
+    // Build where clause
+    const where: any = {};
+    if (category && category !== "all") {
+      where.category = category as string;
+    }
 
-  // Filter by category if provided
-  if (category && category !== "all") {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.category === category
-    );
+    // Get count from database
+    const count = await prisma.product.count({ where });
+
+    // Return count in the format expected by the frontend
+    res.status(200).json({
+      success: true,
+      count,
+    });
+  } catch (error) {
+    console.error("Error counting products:", error);
+    res.status(500).json({
+      success: false,
+      error: { message: "Failed to count products" },
+    });
   }
-
-  // Return count in the format expected by the frontend
-  res.status(200).json({
-    success: true,
-    count: filteredProducts.length,
-  });
 }

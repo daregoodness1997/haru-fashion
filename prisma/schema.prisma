@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  fullname        String
+  password        String
+  phone           String?
+  shippingAddress String?
+  isAdmin         Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  orders          Order[]
+
+  @@map("users")
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  price       Float
+  category    String
+  image1      String
+  image2      String
+  description String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+
+  @@index([category])
+  @@map("products")
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  orderNumber     Int         @unique @default(autoincrement())
+  customerId      Int
+  customer        User        @relation(fields: [customerId], references: [id])
+  shippingAddress String
+  township        String?
+  city            String?
+  state           String?
+  zipCode         String?
+  orderDate       DateTime    @default(now())
+  paymentType     String      @default("CASH_ON_DELIVERY")
+  deliveryType    String      @default("STORE_PICKUP")
+  status          String      @default("pending")
+  trackingNumber  String?
+  totalPrice      Float
+  deliveryDate    DateTime
+  sendEmail       Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  orderItems      OrderItem[]
+
+  @@index([customerId])
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/router";
 
 import { useAuth } from "../../context/AuthContext";
 import Button from "../Buttons/Button";
@@ -22,15 +23,30 @@ const Login: React.FC<Props> = ({
   setSuccessMsg,
 }) => {
   const auth = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const t = useTranslations("LoginRegister");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Login form submitted");
+    console.log("Auth object:", auth);
+    console.log("Auth.login function:", auth.login);
+
     const loginResponse = await auth.login!(email, password);
+    console.log("Login response:", loginResponse);
+
     if (loginResponse.success) {
       setSuccessMsg("login_successful");
+
+      // Redirect admin users to admin dashboard
+      setTimeout(() => {
+        console.log("Checking if admin:", auth.user?.isAdmin);
+        if (auth.user?.isAdmin) {
+          router.push("/admin");
+        }
+      }, 500);
     } else {
       setErrorMsg("incorrect_email_password");
     }

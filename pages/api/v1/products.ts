@@ -1,49 +1,51 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mockProducts } from "../../../data/mockProducts";
+import prisma from "../../../lib/prisma";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { category, order_by, limit, offset } = req.query;
+  try {
+    const { category, order_by, limit, offset } = req.query;
 
-  let filteredProducts = [...mockProducts];
+    // Build where clause
+    const where: any = {};
+    if (category && category !== "all") {
+      where.category = category as string;
+    }
 
-  // Filter by category
-  if (category && category !== "all") {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.category === category
-    );
-  }
+    // Build orderBy clause
+    let orderBy: any = { createdAt: "desc" };
+    if (order_by) {
+      const [field, order] = (order_by as string).split(".");
+      orderBy = { [field]: order || "asc" };
+    }
 
-  // Sort by order_by parameter (e.g., "createdAt.desc")
-  if (order_by) {
-    const [field, order] = (order_by as string).split(".");
-    filteredProducts.sort((a, b) => {
-      const aValue = a[field as keyof typeof a];
-      const bValue = b[field as keyof typeof b];
-      
-      if (order === "desc") {
-        return aValue > bValue ? -1 : 1;
-      }
-      return aValue > bValue ? 1 : -1;
+    // Get total count
+    const total = await prisma.product.count({ where });
+
+    // Get products with pagination
+    const products = await prisma.product.findMany({
+      where,
+      orderBy,
+      take: limit ? parseInt(limit as string) : undefined,
+      skip: offset ? parseInt(offset as string) : 0,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: products,
+      total,
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      error: { message: "Failed to fetch products" },
     });
   }
-
-  // Apply pagination
-  const limitNum = limit ? parseInt(limit as string) : filteredProducts.length;
-  const offsetNum = offset ? parseInt(offset as string) : 0;
-  
-  const paginatedProducts = filteredProducts.slice(
-    offsetNum,
-    offsetNum + limitNum
-  );
-
-  // Return in the format expected by the frontend
-  res.status(200).json({
-    success: true,
-    data: paginatedProducts,
-    total: filteredProducts.length,
-  });
 }

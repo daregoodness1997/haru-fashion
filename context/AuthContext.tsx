@@ -26,6 +26,7 @@ type authType = {
     message: string;
   }>;
   logout?: () => void;
+  updateUser?: (updatedUser: User) => void;
 };
 
 const initialAuth: authType = {
@@ -40,6 +41,7 @@ type User = {
   fullname: string;
   shippingAddress?: string;
   phone?: string;
+  isAdmin?: boolean;
   token: string;
 };
 
@@ -59,16 +61,29 @@ export const useAuth = () => {
 function useProvideAuth() {
   const [user, setUser] = useState<User | null>(null);
 
+  // Load user from localStorage on mount
   useEffect(() => {
-    const initialAuth = getCookie("user");
-    if (initialAuth) {
-      const initUser = JSON.parse(initialAuth as string);
-      setUser(initUser);
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 
+  // Save user to localStorage whenever it changes
   useEffect(() => {
-    setCookie("user", user);
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+      setCookie("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+      deleteCookie("user");
+    }
   }, [user]);
 
   const register = async (
@@ -91,11 +106,12 @@ function useProvideAuth() {
       );
       const registerResponse = response.data;
       const user: User = {
-        id: +registerResponse.id,
+        id: +registerResponse.data.id,
         email,
         fullname,
         shippingAddress,
         phone,
+        isAdmin: registerResponse.data.isAdmin || false,
         token: registerResponse.token,
       };
       setUser(user);
@@ -119,6 +135,9 @@ function useProvideAuth() {
   };
 
   const login = async (email: string, password: string) => {
+    console.log("=== LOGIN FUNCTION CALLED ===");
+    console.log("Email:", email);
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`,
@@ -128,20 +147,27 @@ function useProvideAuth() {
         }
       );
       const loginResponse = response.data;
+      console.log("Login API Response:", loginResponse);
+      console.log("isAdmin from API:", loginResponse.data.isAdmin);
+
       const user: User = {
         id: +loginResponse.data.id,
         email,
         fullname: loginResponse.data.fullname,
         phone: loginResponse.data.phone,
         shippingAddress: loginResponse.data.shippingAddress,
+        isAdmin: loginResponse.data.isAdmin,
         token: loginResponse.token,
       };
+
+      console.log("User object being set:", user);
       setUser(user);
       return {
         success: true,
         message: "login_successful",
       };
     } catch (err) {
+      console.error("Login error:", err);
       return {
         success: false,
         message: "incorrect",
@@ -177,6 +203,10 @@ function useProvideAuth() {
     deleteCookie("user");
   };
 
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+  };
+
   // Return the user object and auth methods
   return {
     user,
@@ -184,5 +214,6 @@ function useProvideAuth() {
     login,
     forgotPassword,
     logout,
+    updateUser,
   };
 }

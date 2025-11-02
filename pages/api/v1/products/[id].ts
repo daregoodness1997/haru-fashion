@@ -1,34 +1,49 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { mockProducts } from "../../../../data/mockProducts";
+import prisma from "../../../../lib/prisma";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { id } = req.query;
-  const productId = parseInt(id as string);
+  try {
+    const { id } = req.query;
+    const productId = parseInt(id as string);
 
-  const product = mockProducts.find((p) => p.id === productId);
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
 
-  if (!product) {
-    return res.status(404).json({
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        error: { message: "Product not found" },
+      });
+    }
+
+    // Format the response to match what the frontend expects
+    const formattedProduct = {
+      ...product,
+      image1: product.image1,
+      image2: product.image2,
+      detail: product.description, // Use description as detail
+      category: {
+        name: product.category,
+      },
+    };
+
+    res.status(200).json({
+      success: true,
+      data: formattedProduct,
+    });
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({
       success: false,
-      error: { message: "Product not found" },
+      error: { message: "Failed to fetch product" },
     });
   }
-
-  // Format the response to match what the frontend expects
-  const formattedProduct = {
-    ...product,
-    detail: product.description, // Use description as detail
-    category: {
-      name: product.category,
-    },
-  };
-
-  res.status(200).json({
-    success: true,
-    data: formattedProduct,
-  });
 }

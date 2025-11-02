@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from "../../../lib/prisma";
+import { emailTemplates, sendEmail } from "../../../lib/emailService";
 
-// Simple in-memory store for demo purposes
-let orders: any[] = [];
-let orderCounter = 1000;
-
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
     try {
       const {
@@ -26,26 +27,104 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         });
       }
 
-      // Create new order
-      const newOrder = {
-        orderNumber: orderCounter++,
-        customerId,
-        shippingAddress,
-        township: null,
-        city: null,
-        state: null,
-        zipCode: null,
-        orderDate: new Date().toISOString(),
-        paymentType: paymentType || "CASH_ON_DELIVERY",
-        deliveryType: deliveryType || "STORE_PICKUP",
-        totalPrice,
-        deliveryDate:
-          deliveryDate || new Date().setDate(new Date().getDate() + 7),
-        products,
-        sendEmail: sendEmail || false,
-      };
+      // Create order with order items
+      const newOrder = await prisma.order.create({
+        data: {
+          customerId,
+          shippingAddress,
+          paymentType: paymentType || "CASH_ON_DELIVERY",
+          deliveryType: deliveryType || "STORE_PICKUP",
+          totalPrice,
+          deliveryDate: deliveryDate
+            ? new Date(deliveryDate)
+            : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          sendEmail: sendEmail || false,
+          orderItems: {
+            create: await Promise.all(
+              products.map(async (item: { id: number; quantity: number }) => {
+                const product = await prisma.product.findUnique({
+                  where: { id: item.id },
+                });
+                return {
+                  productId: item.id,
+                  quantity: item.quantity,
+                  price: product?.price || 0,
+                };
+              })
+            ),
+          },
+        },
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+          customer: true,
+        },
+      });
 
-      orders.push(newOrder);
+      // Send order confirmation email to customer (non-blocking)
+      if (newOrder.customer.email) {
+        const customerEmailTemplate = emailTemplates.orderConfirmation(
+          newOrder.customer.fullname,
+          newOrder.orderNumber,
+          newOrder.totalPrice,
+          newOrder.orderItems,
+          newOrder.shippingAddress
+        );
+        sendEmail(
+          newOrder.customer.email,
+          customerEmailTemplate.subject,
+          customerEmailTemplate.html
+        )
+          .then((result: any) => {
+            if (result.success) {
+              console.log(
+                "✅ Order confirmation sent to:",
+                newOrder.customer.email
+              );
+            } else {
+              console.error(
+                "❌ Failed to send order confirmation:",
+                result.error
+              );
+            }
+          })
+          .catch((err: any) => {
+            console.error("❌ Order confirmation error:", err);
+          });
+      }
+
+      // Send order notification to admin (non-blocking)
+      const adminEmail = process.env.ADMIN_EMAIL;
+      if (adminEmail) {
+        const adminEmailTemplate = emailTemplates.newOrderAdminNotification(
+          newOrder.customer.fullname,
+          newOrder.customer.email,
+          newOrder.orderNumber,
+          newOrder.totalPrice,
+          newOrder.orderItems
+        );
+        sendEmail(
+          adminEmail,
+          adminEmailTemplate.subject,
+          adminEmailTemplate.html
+        )
+          .then((result: any) => {
+            if (result.success) {
+              console.log("✅ Admin order notification sent to:", adminEmail);
+            } else {
+              console.error(
+                "❌ Failed to send admin order notification:",
+                result.error
+              );
+            }
+          })
+          .catch((err: any) => {
+            console.error("❌ Admin order notification error:", err);
+          });
+      }
 
       return res.status(201).json({
         success: true,
@@ -53,26 +132,46 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         message: "Order created successfully",
       });
     } catch (error) {
+      console.error("Error creating order:", error);
       return res.status(500).json({
         success: false,
         error: { message: "Failed to create order" },
       });
     }
   } else if (req.method === "GET") {
-    // Get all orders or filter by customerId
-    const { customerId } = req.query;
+    try {
+      const { customerId } = req.query;
 
-    let filteredOrders = orders;
-    if (customerId) {
-      filteredOrders = orders.filter(
-        (order) => order.customerId === parseInt(customerId as string)
-      );
+      const where: any = {};
+      if (customerId) {
+        where.customerId = parseInt(customerId as string);
+      }
+
+      const orders = await prisma.order.findMany({
+        where,
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
+        orderBy: {
+          orderDate: "desc",
+        },
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: orders,
+      });
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      return res.status(500).json({
+        success: false,
+        error: { message: "Failed to fetch orders" },
+      });
     }
-
-    return res.status(200).json({
-      success: true,
-      data: filteredOrders,
-    });
   } else {
     return res.status(405).json({ error: "Method not allowed" });
   }

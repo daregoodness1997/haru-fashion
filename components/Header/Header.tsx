@@ -12,6 +12,7 @@ import CartItem from "../CartItem/CartItem";
 import Menu from "../Menu/Menu";
 import AppHeader from "./AppHeader";
 import { useWishlist } from "../../context/wishlist/WishlistProvider";
+import { useAuth } from "../../context/AuthContext";
 
 import styles from "./Header.module.css";
 
@@ -22,6 +23,7 @@ type Props = {
 const Header: React.FC<Props> = ({ title }) => {
   const t = useTranslations("Navigation");
   const { wishlist } = useWishlist();
+  const auth = useAuth();
   const [animate, setAnimate] = useState("");
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [didMount, setDidMount] = useState<boolean>(false); // to disable Can't perform a React state Warning
@@ -130,9 +132,15 @@ const Header: React.FC<Props> = ({ title }) => {
                 <SearchForm />
               </li>
               <li>
-                <AuthForm>
-                  <UserIcon />
-                </AuthForm>
+                {auth.user ? (
+                  <Link href="/profile" aria-label="My Profile">
+                    <UserIcon />
+                  </Link>
+                ) : (
+                  <AuthForm>
+                    <UserIcon />
+                  </AuthForm>
+                )}
               </li>
               <li>
                 <Link href="/wishlist" passHref>
