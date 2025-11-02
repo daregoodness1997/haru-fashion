@@ -1,10 +1,10 @@
 import Link from "next/link";
-import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { Menu } from "@headlessui/react";
 import { useTranslations } from "next-intl";
 
+import prisma from "../../lib/prisma";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Card from "../../components/Card/Card";
@@ -102,46 +102,45 @@ export const getServerSideProps: GetServerSideProps = async ({
   query: { page = 1, orderby = "latest" },
 }) => {
   const paramCategory = params!.category as string;
-
   const start = +page === 1 ? 0 : (+page - 1) * 10;
-
   let numberOfProducts = 0;
 
-  if (paramCategory !== "new-arrivals") {
-    const numberOfProductsResponse = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products/count?category=${paramCategory}`
-    );
-    numberOfProducts = +numberOfProductsResponse.data.count;
-  } else {
+  // Build the where clause
+  let whereClause: any = {};
+
+  if (paramCategory === "new-arrivals") {
     numberOfProducts = 10;
+  } else {
+    whereClause.category = paramCategory;
+    numberOfProducts = await prisma.product.count({ where: whereClause });
   }
 
-  let order_by: string;
+  // Build orderBy clause
+  let orderByClause: any = { createdAt: "desc" };
 
   if (orderby === "price") {
-    order_by = "price";
+    orderByClause = { price: "asc" };
   } else if (orderby === "price-desc") {
-    order_by = "price.desc";
-  } else {
-    order_by = "createdAt.desc";
+    orderByClause = { price: "desc" };
   }
 
-  const reqUrl =
-    paramCategory === "new-arrivals"
-      ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products?order_by=createdAt.desc&limit=10`
-      : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products?order_by=${order_by}&offset=${start}&limit=10&category=${paramCategory}`;
+  // Fetch products
+  const fetchedProducts = await prisma.product.findMany({
+    where: paramCategory === "new-arrivals" ? {} : whereClause,
+    orderBy: orderByClause,
+    skip: paramCategory === "new-arrivals" ? 0 : start,
+    take: 10,
+  });
 
-  const res = await axios.get(reqUrl);
-
-  const fetchedProducts = res.data.data.map((product: apiProductsType) => ({
-    ...product,
-    img1: product.image1,
-    img2: product.image2,
-  }));
-
-  let items: apiProductsType[] = [];
-  fetchedProducts.forEach((product: apiProductsType) => {
-    items.push(product);
+  let items: itemType[] = [];
+  fetchedProducts.forEach((product) => {
+    items.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      img1: product.image1,
+      img2: product.image2,
+    });
   });
 
   return {

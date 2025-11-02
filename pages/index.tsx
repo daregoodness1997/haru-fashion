@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import axios from "axios";
 
+import prisma from "../lib/prisma";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Button from "../components/Buttons/Button";
@@ -166,12 +167,14 @@ const Home: React.FC<Props> = ({ products }) => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  // Fetch products directly from database
+  const fetchedProducts = await prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
+
   let products: itemType[] = [];
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products?order_by=createdAt.desc&limit=10`
-  );
-  const fetchedProducts = res.data;
-  fetchedProducts.data.forEach((product: apiProductsType) => {
+  fetchedProducts.forEach((product) => {
     products = [
       ...products,
       {
@@ -183,6 +186,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       },
     ];
   });
+
   return {
     props: {
       messages: {
@@ -191,7 +195,8 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       },
       locale: locale || "en",
       products,
-    }, // will be passed to the page component as props
+    },
+    revalidate: 60, // Revalidate every 60 seconds
   };
 };
 

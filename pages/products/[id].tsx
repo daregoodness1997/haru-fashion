@@ -4,8 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Disclosure } from "@headlessui/react";
 import { useTranslations } from "next-intl";
-import axios from "axios";
 
+import prisma from "../../lib/prisma";
 import Heart from "../../public/icons/Heart";
 import DownArrow from "../../public/icons/DownArrow";
 import FacebookLogo from "../../public/icons/FacebookLogo";
@@ -299,26 +299,33 @@ export const getServerSideProps: GetServerSideProps = async ({
   locale,
 }) => {
   const paramId = params!.id as string;
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products/${paramId}?include=category`
-  );
-  const fetchedProduct: apiProductsType = res.data.data;
+
+  // Fetch product directly from database
+  const fetchedProduct = await prisma.product.findUnique({
+    where: { id: parseInt(paramId) },
+  });
+
+  if (!fetchedProduct) {
+    return { notFound: true };
+  }
 
   let product: itemType = {
     id: fetchedProduct.id,
     name: fetchedProduct.name,
     price: fetchedProduct.price,
-    detail: fetchedProduct.detail,
+    detail: fetchedProduct.description,
     img1: fetchedProduct.image1,
     img2: fetchedProduct.image2,
-    categoryName: fetchedProduct!.category!.name,
+    categoryName: fetchedProduct.category,
   };
 
-  // Might be temporary solution for suggested products
-  const randomProductRes = await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products?category=${product.categoryName}`
-  );
-  const fetchedProducts: apiProductsType[] = randomProductRes.data.data;
+  // Fetch related products from same category
+  const fetchedProducts = await prisma.product.findMany({
+    where: {
+      category: fetchedProduct.category,
+      id: { not: fetchedProduct.id }, // Exclude current product
+    },
+  });
 
   // Shuffle array
   const shuffled = fetchedProducts.sort(() => 0.5 - Math.random());
@@ -327,7 +334,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   let randomFetchedProducts = shuffled.slice(0, 5);
 
   let products: itemType[] = [];
-  randomFetchedProducts.forEach((randomProduct: apiProductsType) => {
+  randomFetchedProducts.forEach((randomProduct) => {
     products.push({
       id: randomProduct.id,
       name: randomProduct.name,

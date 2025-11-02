@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import prisma from "../lib/prisma";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Card from "../components/Card/Card";
 import Pagination from "../components/Util/Pagination";
 import useWindowSize from "../components/Util/useWindowSize";
 import { apiProductsType, itemType } from "../context/cart/cart-types";
-import axios from "axios";
 
 type Props = {
   items: itemType[];
@@ -80,20 +80,28 @@ export const getServerSideProps: GetServerSideProps = async ({
   locale,
   query: { q = "" },
 }) => {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/products/search?q=${q}`
-  );
-  const fetchedProducts: apiProductsType[] = res.data.data.map(
-    (product: apiProductsType) => ({
-      ...product,
+  const searchQuery = q as string;
+
+  // Search products directly in database
+  const fetchedProducts = await prisma.product.findMany({
+    where: {
+      OR: [
+        { name: { contains: searchQuery, mode: "insensitive" } },
+        { description: { contains: searchQuery, mode: "insensitive" } },
+      ],
+    },
+    take: 20,
+  });
+
+  let items: itemType[] = [];
+  fetchedProducts.forEach((product) => {
+    items.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
       img1: product.image1,
       img2: product.image2,
-    })
-  );
-
-  let items: apiProductsType[] = [];
-  fetchedProducts.forEach((product: apiProductsType) => {
-    items.push(product);
+    });
   });
 
   return {

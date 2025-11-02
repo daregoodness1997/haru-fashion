@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
+import prisma from "../../lib/prisma";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
@@ -308,10 +308,32 @@ export const getServerSideProps: GetServerSideProps = async ({
   let order: Order | null = null;
 
   try {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/orders/${orderId}`
-    );
-    order = res.data.data;
+    // Fetch order directly from database
+    const fetchedOrder = await prisma.order.findUnique({
+      where: { id: parseInt(orderId) },
+      include: {
+        customer: true,
+        orderItems: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
+
+    if (fetchedOrder) {
+      // Map category from product to match Order type
+      order = {
+        ...fetchedOrder,
+        orderItems: fetchedOrder.orderItems.map((item) => ({
+          ...item,
+          product: {
+            ...item.product,
+            category: item.product.category, // Already a string
+          },
+        })),
+      } as any;
+    }
   } catch (error) {
     console.error("Error fetching order:", error);
   }

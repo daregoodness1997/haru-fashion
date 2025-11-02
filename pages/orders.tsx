@@ -2,8 +2,8 @@ import { GetServerSideProps } from "next";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import prisma from "../lib/prisma";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 
@@ -232,25 +232,35 @@ export const getServerSideProps: GetServerSideProps = async ({
   locale,
   req,
 }) => {
-  // In a real app, get user ID from session/token
-  // For now, we'll try to get it from cookies or return empty
+  // Get user from cookies
   const cookies = req.headers.cookie;
   let orders: Order[] = [];
 
-  // This is a simplified version - in production, decode the token properly
   if (cookies && cookies.includes("user")) {
     try {
-      // Extract user info from cookie (this is simplified)
-      // In production, use proper JWT or session handling
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/orders`,
-        {
-          headers: {
-            Cookie: req.headers.cookie || "",
+      // Parse user from cookie
+      const userCookie = cookies
+        .split("; ")
+        .find((row) => row.startsWith("user="));
+
+      if (userCookie) {
+        const userData = JSON.parse(
+          decodeURIComponent(userCookie.split("=")[1])
+        );
+
+        // Fetch orders directly from database
+        orders = (await prisma.order.findMany({
+          where: { customerId: userData.id },
+          include: {
+            orderItems: {
+              include: {
+                product: true,
+              },
+            },
           },
-        }
-      );
-      orders = res.data.data || [];
+          orderBy: { createdAt: "desc" },
+        })) as any;
+      }
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
