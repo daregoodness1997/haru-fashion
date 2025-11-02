@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
+import Price from "../components/Price/Price";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import LeftArrow from "../public/icons/LeftArrow";
@@ -98,7 +99,7 @@ const ShoppingCart = () => {
                           <span>{item.name}</span>
                         </td>
                         <td className="text-right text-gray400 hidden sm:table-cell">
-                          $ {roundDecimal(item.price)}
+                          <Price amount={item.price} />
                         </td>
                         <td>
                           <div className="w-12 h-32 sm:h-auto sm:w-3/4 md:w-2/6 mx-auto flex flex-col-reverse sm:flex-row border border-gray300 sm:divide-x-2 divide-gray300">
@@ -120,10 +121,10 @@ const ShoppingCart = () => {
                           </div>
                         </td>
                         <td className="text-right text-gray400">
-                          $ {roundDecimal(item.price * item.qty!)}
+                          <Price amount={item.price * item.qty!} />
                           <br />
                           <span className="text-xs">
-                            ($ {roundDecimal(item.price)})
+                            (<Price amount={item.price} />)
                           </span>
                         </td>
                         <td className="text-right" style={{ minWidth: "3rem" }}>
@@ -156,7 +157,9 @@ const ShoppingCart = () => {
               <h2 className="text-xl mb-3">{t("cart_totals")}</h2>
               <div className="flex justify-between py-2">
                 <span className="uppercase">{t("subtotal")}</span>
-                <span>$ {roundDecimal(subtotal)}</span>
+                <span>
+                  <Price amount={subtotal} />
+                </span>
               </div>
               <div className="py-3">
                 <span className="uppercase">{t("delivery")}</span>
@@ -192,7 +195,9 @@ const ShoppingCart = () => {
                         {t("within_yangon")}
                       </label>
                     </div>
-                    <span>$ 2.00</span>
+                    <span>
+                      <Price amount={2.0} />
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <div>
@@ -208,13 +213,17 @@ const ShoppingCart = () => {
                         {t("other_cities")}
                       </label>
                     </div>
-                    <span>$ 7.00</span>
+                    <span>
+                      <Price amount={7.0} />
+                    </span>
                   </div>
                 </div>
               </div>
               <div className="flex justify-between py-3">
                 <span>{t("grand_total")}</span>
-                <span>$ {roundDecimal(subtotal + deliFee)}</span>
+                <span>
+                  <Price amount={subtotal + deliFee} />
+                </span>
               </div>
               <Button
                 value={t("proceed_to_checkout")}

@@ -1,5 +1,8 @@
 import nodemailer from "nodemailer";
 
+// Exchange rate for currency conversion in emails
+const USD_TO_NGN_RATE = 1650;
+
 // Create reusable transporter
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST || "smtp.gmail.com",
@@ -141,10 +144,24 @@ export const emailTemplates = {
     orderNumber: number,
     totalPrice: number,
     items: any[],
-    shippingAddress: string
-  ) => ({
-    subject: `Order Confirmation #${orderNumber} - Haru Fashion`,
-    html: getEmailTemplate(`
+    shippingAddress: string,
+    currency: string = "USD"
+  ) => {
+    const formatPrice = (amount: number) => {
+      if (currency === "NGN") {
+        // Convert USD to NGN
+        const convertedAmount = amount * USD_TO_NGN_RATE;
+        return `₦${convertedAmount.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+      }
+      return `$${amount.toFixed(2)}`;
+    };
+
+    return {
+      subject: `Order Confirmation #${orderNumber} - Haru Fashion`,
+      html: getEmailTemplate(`
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
 <tr><td align="center" style="padding:45px 0;">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;background:#F8F8F8;">
@@ -203,9 +220,9 @@ export const emailTemplates = {
           <tr>
             <td colspan="2" style="padding-top:10px;">
               <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
-                $${item.price.toFixed(2)} × ${item.quantity} = $${(
+                ${formatPrice(item.price)} × ${item.quantity} = ${formatPrice(
             item.quantity * item.price
-          ).toFixed(2)}
+          )}
               </p>
             </td>
           </tr>
@@ -218,7 +235,7 @@ export const emailTemplates = {
       <!-- Total -->
       <div style="background:#333;color:#FFF;padding:20px;margin:20px 0;">
         <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:20px;font-weight:bold;text-align:right;">
-          Total: $${totalPrice.toFixed(2)}
+          Total: ${formatPrice(totalPrice)}
         </p>
       </div>
       
@@ -248,7 +265,8 @@ export const emailTemplates = {
 </td></tr>
 </table>
     `),
-  }),
+    };
+  },
 
   // Admin notification for new order
   newOrderAdminNotification: (
@@ -256,10 +274,24 @@ export const emailTemplates = {
     customerEmail: string,
     orderNumber: number,
     totalPrice: number,
-    items: any[]
-  ) => ({
-    subject: `🛍️ New Order #${orderNumber} - Haru Fashion`,
-    html: getEmailTemplate(`
+    items: any[],
+    currency: string = "USD"
+  ) => {
+    const formatPrice = (amount: number) => {
+      if (currency === "NGN") {
+        // Convert USD to NGN
+        const convertedAmount = amount * USD_TO_NGN_RATE;
+        return `₦${convertedAmount.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+      }
+      return `$${amount.toFixed(2)}`;
+    };
+
+    return {
+      subject: `🛍️ New Order #${orderNumber} - Haru Fashion`,
+      html: getEmailTemplate(`
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
 <tr><td align="center" style="padding:45px 0;">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;background:#F8F8F8;">
@@ -282,7 +314,7 @@ export const emailTemplates = {
           <strong>Order Date:</strong> ${new Date().toLocaleString()}
         </p>
         <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
-          <strong>Total:</strong> $${totalPrice.toFixed(2)}
+          <strong>Total:</strong> ${formatPrice(totalPrice)}
         </p>
       </div>
       
@@ -296,11 +328,9 @@ export const emailTemplates = {
             (item) => `
         <div style="padding:8px 0;border-bottom:1px solid #e5e7eb;">
           <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#333;">
-            ${item.product.name} - Qty: ${
-              item.quantity
-            } × $${item.price.toFixed(2)} = $${(
-              item.quantity * item.price
-            ).toFixed(2)}
+            ${item.product.name} - Qty: ${item.quantity} × ${formatPrice(
+              item.price
+            )} = ${formatPrice(item.quantity * item.price)}
           </p>
         </div>
         `
@@ -326,7 +356,8 @@ export const emailTemplates = {
 </td></tr>
 </table>
     `),
-  }),
+    };
+  },
 
   // Order status update email for customer
   orderStatusUpdate: (

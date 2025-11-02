@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "../context/AuthContext";
 import prisma from "../lib/prisma";
+import Price from "../components/Price/Price";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 
@@ -155,7 +156,7 @@ const Orders: React.FC<Props> = ({ orders }) => {
                     </div>
                     <div className="mt-4 md:mt-0 text-left md:text-right">
                       <p className="text-2xl font-bold mb-2">
-                        ${order.totalPrice.toFixed(2)}
+                        <Price amount={order.totalPrice} />
                       </p>
                       <p className="text-sm text-gray400 mb-1">
                         {t("payment")}: {order.paymentType.replace(/_/g, " ")}
@@ -189,12 +190,12 @@ const Orders: React.FC<Props> = ({ orders }) => {
                               {item.product.name}
                             </Link>
                             <p className="text-sm text-gray400">
-                              {t("quantity")}: {item.quantity} × $
-                              {item.price.toFixed(2)}
+                              {t("quantity")}: {item.quantity} ×{" "}
+                              <Price amount={item.price} />
                             </p>
                           </div>
                           <p className="font-semibold">
-                            ${(item.quantity * item.price).toFixed(2)}
+                            <Price amount={item.quantity * item.price} />
                           </p>
                         </div>
                       ))}
@@ -249,7 +250,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         );
 
         // Fetch orders directly from database
-        orders = (await prisma.order.findMany({
+        const rawOrders = await prisma.order.findMany({
           where: { customerId: userData.id },
           include: {
             orderItems: {
@@ -259,6 +260,23 @@ export const getServerSideProps: GetServerSideProps = async ({
             },
           },
           orderBy: { createdAt: "desc" },
+        });
+
+        // Serialize dates to strings
+        orders = rawOrders.map((order) => ({
+          ...order,
+          orderDate: order.orderDate.toISOString(),
+          deliveryDate: order.deliveryDate.toISOString(),
+          createdAt: order.createdAt.toISOString(),
+          updatedAt: order.updatedAt.toISOString(),
+          orderItems: order.orderItems.map((item) => ({
+            ...item,
+            product: {
+              ...item.product,
+              createdAt: item.product.createdAt.toISOString(),
+              updatedAt: item.product.updatedAt.toISOString(),
+            },
+          })),
         })) as any;
       }
     } catch (error) {

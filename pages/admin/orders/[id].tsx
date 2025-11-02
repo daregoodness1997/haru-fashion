@@ -7,6 +7,7 @@ import axios from "axios";
 import Image from "next/image";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
+import Price from "../../../components/Price/Price";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function AdminOrderDetail() {
@@ -156,12 +157,12 @@ export default function AdminOrderDetail() {
                         {tOrders("quantity")}: {item.quantity}
                       </p>
                       <p className="text-gray400">
-                        ${item.price.toFixed(2)} {tOrders("each")}
+                        <Price amount={item.price} /> {tOrders("each")}
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="font-semibold">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        <Price amount={item.price * item.quantity} />
                       </p>
                     </div>
                   </div>
@@ -169,7 +170,9 @@ export default function AdminOrderDetail() {
                 <div className="mt-4 pt-4 border-t border-gray200">
                   <div className="flex justify-between text-xl font-semibold">
                     <span>{tOrders("total")}</span>
-                    <span>${order.totalPrice.toFixed(2)}</span>
+                    <span>
+                      <Price amount={order.totalPrice} />
+                    </span>
                   </div>
                 </div>
               </div>

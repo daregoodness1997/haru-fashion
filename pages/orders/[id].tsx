@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import prisma from "../../lib/prisma";
+import Price from "../../components/Price/Price";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
@@ -183,12 +184,12 @@ const OrderDetail: React.FC<Props> = ({ order }) => {
                           {t("category")}: {item.product.category}
                         </p>
                         <p className="text-gray400 mt-1">
-                          ${item.price.toFixed(2)} × {item.quantity}
+                          <Price amount={item.price} /> × {item.quantity}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold">
-                          ${(item.quantity * item.price).toFixed(2)}
+                          <Price amount={item.quantity * item.price} />
                         </p>
                       </div>
                     </div>
@@ -200,7 +201,7 @@ const OrderDetail: React.FC<Props> = ({ order }) => {
                   <div className="flex justify-between mb-2">
                     <span className="text-gray400">{t("subtotal")}:</span>
                     <span className="font-semibold">
-                      ${subtotal.toFixed(2)}
+                      <Price amount={subtotal} />
                     </span>
                   </div>
                   <div className="flex justify-between mb-2">
@@ -209,7 +210,9 @@ const OrderDetail: React.FC<Props> = ({ order }) => {
                   </div>
                   <div className="flex justify-between text-xl font-bold pt-2 border-t border-gray200">
                     <span>{t("total")}:</span>
-                    <span>${order.totalPrice.toFixed(2)}</span>
+                    <span>
+                      <Price amount={order.totalPrice} />
+                    </span>
                   </div>
                 </div>
               </div>
@@ -322,14 +325,25 @@ export const getServerSideProps: GetServerSideProps = async ({
     });
 
     if (fetchedOrder) {
-      // Map category from product to match Order type
+      // Map category from product to match Order type and serialize dates
       order = {
         ...fetchedOrder,
+        orderDate: fetchedOrder.orderDate.toISOString(),
+        deliveryDate: fetchedOrder.deliveryDate.toISOString(),
+        createdAt: fetchedOrder.createdAt.toISOString(),
+        updatedAt: fetchedOrder.updatedAt.toISOString(),
+        customer: {
+          ...fetchedOrder.customer,
+          createdAt: fetchedOrder.customer.createdAt.toISOString(),
+          updatedAt: fetchedOrder.customer.updatedAt.toISOString(),
+        },
         orderItems: fetchedOrder.orderItems.map((item) => ({
           ...item,
           product: {
             ...item.product,
             category: item.product.category, // Already a string
+            createdAt: item.product.createdAt.toISOString(),
+            updatedAt: item.product.updatedAt.toISOString(),
           },
         })),
       } as any;

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
+import Price from "../Price/Price";
 import Heart from "../../public/icons/Heart";
 import styles from "./Card.module.css";
 import HeartSolid from "../../public/icons/HeartSolid";
@@ -84,7 +85,9 @@ const Card: FC<Props> = ({ item }) => {
         <Link href={itemLink} className={styles.itemName}>
           {name}
         </Link>
-        <div className="text-gray400">$ {price}</div>
+        <div className="text-gray400">
+          <Price amount={price} />
+        </div>
         <button
           type="button"
           onClick={() => addOne!(item)}

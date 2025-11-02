@@ -7,6 +7,7 @@ import axios from "axios";
 import Image from "next/image";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
+import Price from "../../../components/Price/Price";
 import { useAuth } from "../../../context/AuthContext";
 import Button from "../../../components/Buttons/Button";
 
@@ -442,7 +443,7 @@ export default function AdminProducts() {
                   <h3 className="font-semibold mb-2">{product.name}</h3>
                   <p className="text-gray400 mb-2">{product.category}</p>
                   <p className="text-xl font-semibold mb-4">
-                    ${product.price.toFixed(2)}
+                    <Price amount={product.price} />
                   </p>
                   <div className="flex gap-2">
                     <button

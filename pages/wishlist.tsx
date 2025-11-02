@@ -3,6 +3,7 @@ import Image from "next/image";
 import { GetStaticProps } from "next";
 import { useTranslations } from "next-intl";
 
+import Price from "../components/Price/Price";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import LeftArrow from "../public/icons/LeftArrow";
@@ -100,7 +101,7 @@ const Wishlist = () => {
                           {item.name}
                         </td>
                         <td className="text-right text-gray400">
-                          $ {item.price}
+                          <Price amount={item.price} />
                         </td>
                         <td className="text-center hidden sm:table-cell max-w-xs text-gray400">
                           <Button

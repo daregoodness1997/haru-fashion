@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { FC, useContext } from "react";
 import { roundDecimal } from "../Util/utilFunc";
+import Price from "../Price/Price";
 
 type Props = {
   img: string;
@@ -52,7 +53,7 @@ const Item: FC<Props> = ({
         >
           &#10005;
         </button>
-        <span>$ {roundDecimal(price)}</span>
+        <Price amount={price} />
       </div>
     </div>
   );

@@ -4,11 +4,13 @@ import axios from "axios";
 import Image from "next/image";
 import { GetStaticProps } from "next";
 
+import Price from "../components/Price/Price";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
 import Button from "../components/Buttons/Button";
 import { roundDecimal } from "../components/Util/utilFunc";
 import { useCart } from "../context/cart/CartProvider";
+import { useCurrency } from "../context/CurrencyContext";
 import Input from "../components/Input/Input";
 import { itemType } from "../context/wishlist/wishlist-type";
 import { useAuth } from "../context/AuthContext";
@@ -35,6 +37,7 @@ type Order = {
 const ShoppingCart = () => {
   const t = useTranslations("CartWishlist");
   const { cart, clearCart } = useCart();
+  const { currency } = useCurrency();
   const auth = useAuth();
   const [deli, setDeli] = useState<DeliveryType>("STORE_PICKUP");
   const [paymentMethod, setPaymentMethod] =
@@ -98,6 +101,7 @@ const ShoppingCart = () => {
             deliveryType: deli,
             products,
             sendEmail,
+            currency,
           }
         );
         if (res.data.success) {
@@ -342,7 +346,7 @@ const ShoppingCart = () => {
                         <span className="text-gray400">x {item.qty}</span>
                       </span>
                       <span className="text-base">
-                        $ {roundDecimal(item.price * item!.qty!)}
+                        <Price amount={item.price * item!.qty!} />
                       </span>
                     </div>
                   ))}
@@ -350,7 +354,9 @@ const ShoppingCart = () => {
 
                 <div className="py-3 flex justify-between">
                   <span className="uppercase">{t("subtotal")}</span>
-                  <span>$ {subtotal}</span>
+                  <span>
+                    <Price amount={parseFloat(subtotal as string)} />
+                  </span>
                 </div>
 
                 <div className="py-3">
@@ -387,7 +393,9 @@ const ShoppingCart = () => {
                           {t("within_yangon")}
                         </label>
                       </div>
-                      <span>$ 2.00</span>
+                      <span>
+                        <Price amount={2.0} />
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <div>
@@ -403,7 +411,9 @@ const ShoppingCart = () => {
                           {t("other_cities")}
                         </label>
                       </div>
-                      <span>$ 7.00</span>
+                      <span>
+                        <Price amount={7.0} />
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -411,7 +421,9 @@ const ShoppingCart = () => {
                 <div>
                   <div className="flex justify-between py-3">
                     <span>{t("grand_total")}</span>
-                    <span>$ {roundDecimal(+subtotal + deliFee)}</span>
+                    <span>
+                      <Price amount={+subtotal + deliFee} />
+                    </span>
                   </div>
 
                   <div className="grid gap-4 mt-2 mb-4">
@@ -589,7 +601,7 @@ const ShoppingCart = () => {
                   <div className="pt-2 flex justify-between mb-2">
                     <span className="text-base uppercase">{t("total")}</span>
                     <span className="text-base">
-                      $ {completedOrder.totalPrice}
+                      <Price amount={completedOrder.totalPrice} />
                     </span>
                   </div>
                 </div>

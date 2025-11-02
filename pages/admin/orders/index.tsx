@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
+import Price from "../../../components/Price/Price";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function AdminOrders() {
@@ -169,7 +170,9 @@ export default function AdminOrders() {
                           </div>
                         </td>
                         <td className="p-4">{order.orderItems.length}</td>
-                        <td className="p-4">${order.totalPrice.toFixed(2)}</td>
+                        <td className="p-4">
+                          <Price amount={order.totalPrice} />
+                        </td>
                         <td className="p-4">
                           <select
                             value={order.status}

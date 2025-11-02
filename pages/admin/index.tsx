@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Price from "../../components/Price/Price";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { useAuth } from "../../context/AuthContext";
@@ -183,7 +184,9 @@ export default function AdminDashboard() {
                           </Link>
                         </td>
                         <td className="p-4">{order.customer.fullname}</td>
-                        <td className="p-4">${order.totalPrice.toFixed(2)}</td>
+                        <td className="p-4">
+                          <Price amount={order.totalPrice} />
+                        </td>
                         <td className="p-4">
                           <span
                             className={`px-3 py-1 text-sm ${

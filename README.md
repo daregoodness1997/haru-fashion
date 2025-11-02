@@ -27,6 +27,8 @@ An e-commerce web application developed with Next.JS and TypeScript. Tailwind CS
 - Add To Cart 🛒
 - Different Category Page 🧑🏻👩🏻🎒
 - Authentication (Register/Login/Logout) 🛡️
+- Multi-Currency Support (USD ↔ NGN) 💱
+- Live Exchange Rates 📊
 - Pagination ⬅️➡️
 - Animation ✨
 - i18n (English & Burmese) 🌐

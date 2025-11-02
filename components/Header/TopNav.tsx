@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
+import { useCurrency } from "../../context/CurrencyContext";
 import InstagramLogo from "../../public/icons/InstagramLogo";
 import FacebookLogo from "../../public/icons/FacebookLogo";
 import DownArrow from "../../public/icons/DownArrow";
@@ -39,6 +40,7 @@ const TopNav = () => {
   const router = useRouter();
   const { asPath, locale } = router;
   const t = useTranslations("Navigation");
+  const { currency, setCurrency } = useCurrency();
 
   return (
     <div className="bg-gray500 text-gray100 hidden lg:block">
@@ -99,7 +101,7 @@ const TopNav = () => {
           <li>
             <Menu as="div" className="relative">
               <Menu.Button as="a" href="#" className="flex">
-                {t("usd")} <DownArrow />
+                {currency === "USD" ? "USD" : "NGN"} <DownArrow />
               </Menu.Button>
               <Menu.Items
                 className="flex flex-col w-20 right-0 absolute p-1 border border-gray200 bg-white mt-2 outline-none"
@@ -107,30 +109,34 @@ const TopNav = () => {
               >
                 <Menu.Item>
                   {({ active }) => (
-                    <a
-                      href="#"
+                    <button
+                      onClick={() => setCurrency("USD")}
                       className={`${
                         active
                           ? "bg-gray100 text-gray500"
                           : "bg-white text-gray500"
+                      } ${
+                        currency === "USD" ? "font-bold" : ""
                       } py-2 px-4 text-center focus:outline-none`}
                     >
-                      {t("usd")}
-                    </a>
+                      USD
+                    </button>
                   )}
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <a
-                      href="#"
+                    <button
+                      onClick={() => setCurrency("NGN")}
                       className={`${
                         active
                           ? "bg-gray100 text-gray500"
                           : "bg-white text-gray500"
+                      } ${
+                        currency === "NGN" ? "font-bold" : ""
                       } py-2 px-4 text-center focus:outline-none`}
                     >
-                      {t("mmk")}
-                    </a>
+                      NGN
+                    </button>
                   )}
                 </Menu.Item>
               </Menu.Items>

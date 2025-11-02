@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { ProvideCart } from "../context/cart/CartProvider";
 import { ProvideWishlist } from "../context/wishlist/WishlistProvider";
 import { ProvideAuth } from "../context/AuthContext";
+import { CurrencyProvider } from "../context/CurrencyContext";
 
 import "../styles/globals.css";
 import "animate.css";
@@ -34,11 +35,13 @@ const MyApp = ({ Component, pageProps }: AppCustomProps) => {
       timeZone="UTC"
     >
       <ProvideAuth>
-        <ProvideWishlist>
-          <ProvideCart>
-            <Component {...pageProps} />
-          </ProvideCart>
-        </ProvideWishlist>
+        <CurrencyProvider>
+          <ProvideWishlist>
+            <ProvideCart>
+              <Component {...pageProps} />
+            </ProvideCart>
+          </ProvideWishlist>
+        </CurrencyProvider>
       </ProvideAuth>
     </NextIntlClientProvider>
   );

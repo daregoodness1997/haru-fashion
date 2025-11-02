@@ -17,6 +17,7 @@ export default async function handler(
         deliveryType,
         products,
         sendEmail: shouldSendEmail,
+        currency,
       } = req.body;
 
       // Debug logging
@@ -69,6 +70,7 @@ export default async function handler(
           paymentType: paymentType || "CASH_ON_DELIVERY",
           deliveryType: deliveryType || "STORE_PICKUP",
           totalPrice: totalPriceNumber,
+          currency: currency || "USD",
           deliveryDate: deliveryDate
             ? new Date(deliveryDate)
             : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -105,7 +107,8 @@ export default async function handler(
           newOrder.orderNumber,
           newOrder.totalPrice,
           newOrder.orderItems,
-          newOrder.shippingAddress
+          newOrder.shippingAddress,
+          currency || "USD"
         );
         sendEmail(
           newOrder.customer.email,
@@ -138,7 +141,8 @@ export default async function handler(
           newOrder.customer.email,
           newOrder.orderNumber,
           newOrder.totalPrice,
-          newOrder.orderItems
+          newOrder.orderItems,
+          currency || "USD"
         );
         sendEmail(
           adminEmail,

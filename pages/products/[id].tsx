@@ -6,6 +6,7 @@ import { Disclosure } from "@headlessui/react";
 import { useTranslations } from "next-intl";
 
 import prisma from "../../lib/prisma";
+import Price from "../../components/Price/Price";
 import Heart from "../../public/icons/Heart";
 import DownArrow from "../../public/icons/DownArrow";
 import FacebookLogo from "../../public/icons/FacebookLogo";
@@ -151,7 +152,7 @@ const Product: React.FC<Props> = ({ product, products }) => {
           <div className="infoSection w-full md:w-1/2 h-auto py-8 sm:pl-4 flex flex-col px-4">
             <h1 className="text-3xl mb-4">{product.name}</h1>
             <span className="text-2xl text-gray400 mb-2">
-              $ {product.price}
+              <Price amount={product.price} />
             </span>
             <span className="mb-2 text-justify">{product.description}</span>
             <span className="mb-2">

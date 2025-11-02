@@ -57,6 +57,7 @@ model Order {
   status          String      @default("pending")
   trackingNumber  String?
   totalPrice      Float
+  currency        String      @default("USD")
   deliveryDate    DateTime
   sendEmail       Boolean     @default(false)
   createdAt       DateTime    @default(now())

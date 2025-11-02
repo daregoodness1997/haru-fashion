@@ -6,6 +6,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
 
+import { useCurrency } from "../../context/CurrencyContext";
 import MenuIcon from "../../public/icons/MenuIcon";
 import AuthForm from "../Auth/AuthForm";
 import WhistlistIcon from "../../public/icons/WhistlistIcon";
@@ -23,6 +24,7 @@ export default function Menu() {
   const { asPath, locale } = router;
   const { wishlist } = useWishlist();
   const auth = useAuth();
+  const { currency, setCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -290,7 +292,7 @@ export default function Menu() {
                         href="#"
                         className="flex justify-center items-center py-2 px-4 text-center"
                       >
-                        {t("usd")} <DownArrow />
+                        {currency === "USD" ? "USD" : "NGN"} <DownArrow />
                       </HMenu.Button>
                       <HMenu.Items
                         className="flex flex-col w-full right-0 absolute p-1 border border-gray200 bg-white mt-2 outline-none"
@@ -298,30 +300,34 @@ export default function Menu() {
                       >
                         <HMenu.Item>
                           {({ active }) => (
-                            <a
-                              href="#"
+                            <button
+                              onClick={() => setCurrency("USD")}
                               className={`${
                                 active
                                   ? "bg-gray100 text-gray500"
                                   : "bg-white text-gray500"
+                              } ${
+                                currency === "USD" ? "font-bold" : ""
                               } py-2 px-4 text-center focus:outline-none`}
                             >
-                              {t("usd")}
-                            </a>
+                              USD
+                            </button>
                           )}
                         </HMenu.Item>
                         <HMenu.Item>
                           {({ active }) => (
-                            <a
-                              href="#"
+                            <button
+                              onClick={() => setCurrency("NGN")}
                               className={`${
                                 active
                                   ? "bg-gray100 text-gray500"
                                   : "bg-white text-gray500"
+                              } ${
+                                currency === "NGN" ? "font-bold" : ""
                               } py-2 px-4 text-center focus:outline-none`}
                             >
-                              {t("mmk")}
-                            </a>
+                              NGN
+                            </button>
                           )}
                         </HMenu.Item>
                       </HMenu.Items>
