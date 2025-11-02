@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie, removeCookies, setCookies } from "cookies-next";
+import { getCookie, deleteCookie, setCookie } from "cookies-next";
 import React, { useState, useEffect, useContext, createContext } from "react";
 
 type authType = {
@@ -68,7 +68,7 @@ function useProvideAuth() {
   }, []);
 
   useEffect(() => {
-    setCookies("user", user);
+    setCookie("user", user);
   }, [user]);
 
   const register = async (
@@ -174,7 +174,7 @@ function useProvideAuth() {
 
   const logout = () => {
     setUser(null);
-    removeCookies("user");
+    deleteCookie("user");
   };
 
   // Return the user object and auth methods

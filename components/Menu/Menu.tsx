@@ -87,15 +87,13 @@ export default function Menu() {
               >
                 <div className="flex justify-between items-center p-6 pb-0">
                   <Link href="/">
-                    <a>
-                      <Image
-                        className="justify-center"
-                        src="/logo.svg"
-                        alt="Picture of the author"
-                        width={85}
-                        height={22}
-                      />
-                    </a>
+                    <Image
+                      className="justify-center"
+                      src="/logo.svg"
+                      alt="Picture of the author"
+                      width={85}
+                      height={22}
+                    />
                   </Link>
                   <button
                     type="button"
@@ -120,53 +118,47 @@ export default function Menu() {
                         onChange={handleChange}
                       />
                     </form>
-                    <Link href="/product-category/men">
-                      <a
-                        className="w-full text-xl hover:bg-gray100 text-left py-2"
-                        onClick={closeModal}
-                      >
-                        {t("men")}
-                      </a>
+                    <Link
+                      href="/product-category/men"
+                      className="w-full text-xl hover:bg-gray100 text-left py-2"
+                      onClick={closeModal}
+                    >
+                      {t("men")}
                     </Link>
-                    <Link href="/product-category/women">
-                      <a
-                        className="w-full text-xl hover:bg-gray100 text-left py-2"
-                        onClick={closeModal}
-                      >
-                        {t("women")}
-                      </a>
+                    <Link
+                      href="/product-category/women"
+                      className="w-full text-xl hover:bg-gray100 text-left py-2"
+                      onClick={closeModal}
+                    >
+                      {t("women")}
                     </Link>
-                    <Link href="/product-category/bags">
-                      <a
-                        className="w-full text-xl hover:bg-gray100 text-left py-2"
-                        onClick={closeModal}
-                      >
-                        {t("bags")}
-                      </a>
+                    <Link
+                      href="/product-category/bags"
+                      className="w-full text-xl hover:bg-gray100 text-left py-2"
+                      onClick={closeModal}
+                    >
+                      {t("bags")}
                     </Link>
-                    <Link href="/blogs">
-                      <a
-                        className="w-full text-xl hover:bg-gray100 text-left py-2"
-                        onClick={closeModal}
-                      >
-                        {t("blogs")}
-                      </a>
+                    <Link
+                      href="/blogs"
+                      className="w-full text-xl hover:bg-gray100 text-left py-2"
+                      onClick={closeModal}
+                    >
+                      {t("blogs")}
                     </Link>
-                    <Link href="/about">
-                      <a
-                        className="w-full text-xl hover:bg-gray100 text-left py-2"
-                        onClick={closeModal}
-                      >
-                        {t("about_us")}
-                      </a>
+                    <Link
+                      href="/about"
+                      className="w-full text-xl hover:bg-gray100 text-left py-2"
+                      onClick={closeModal}
+                    >
+                      {t("about_us")}
                     </Link>
-                    <Link href="/contact">
-                      <a
-                        className="w-full text-xl hover:bg-gray100 text-left py-2"
-                        onClick={closeModal}
-                      >
-                        {t("contact_us")}
-                      </a>
+                    <Link
+                      href="/contact"
+                      className="w-full text-xl hover:bg-gray100 text-left py-2"
+                      onClick={closeModal}
+                    >
+                      {t("contact_us")}
                     </Link>
                     <hr className="border border-gray300 w-full mt-2" />
                     <div className="w-full text-xl py-2 my-3 flex justify-between">
@@ -176,20 +168,21 @@ export default function Menu() {
                       </AuthForm>
                     </div>
                     <hr className="border border-gray300 w-full" />
-                    <Link href="/wishlist">
-                      <a className="text-xl py-2 my-3 w-full flex justify-between">
-                        <span>{t("wishlist")}</span>
-                        <div className="relative">
-                          <WhistlistIcon />
-                          {noOfWishlist > 0 && (
-                            <span
-                              className={`absolute text-xs -top-0 -left-7 bg-gray500 text-gray100 py-1 px-2 rounded-full`}
-                            >
-                              {noOfWishlist}
-                            </span>
-                          )}
-                        </div>
-                      </a>
+                    <Link
+                      href="/wishlist"
+                      className="text-xl py-2 my-3 w-full flex justify-between"
+                    >
+                      <span>{t("wishlist")}</span>
+                      <div className="relative">
+                        <WhistlistIcon />
+                        {noOfWishlist > 0 && (
+                          <span
+                            className={`absolute text-xs -top-0 -left-7 bg-gray500 text-gray100 py-1 px-2 rounded-full`}
+                          >
+                            {noOfWishlist}
+                          </span>
+                        )}
+                      </div>
                     </Link>
                     <hr className="border border-gray300 w-full" />
 
@@ -211,29 +204,29 @@ export default function Menu() {
                         style={{ zIndex: 9999 }}
                       >
                         <HMenu.Item>
-                          <Link href={asPath} locale="en">
-                            <a
-                              className={`${
-                                locale === "en"
-                                  ? "bg-gray200 text-gray500"
-                                  : "bg-white text-gray500"
-                              } py-2 px-4 text-center focus:outline-none`}
-                            >
-                              {t("english")}
-                            </a>
+                          <Link
+                            href={asPath}
+                            locale="en"
+                            className={`${
+                              locale === "en"
+                                ? "bg-gray200 text-gray500"
+                                : "bg-white text-gray500"
+                            } py-2 px-4 text-center focus:outline-none`}
+                          >
+                            {t("english")}
                           </Link>
                         </HMenu.Item>
                         <HMenu.Item>
-                          <Link href={asPath} locale="my">
-                            <a
-                              className={`${
-                                locale === "my"
-                                  ? "bg-gray200 text-gray500"
-                                  : "bg-white text-gray500"
-                              } py-2 px-4 text-center focus:outline-none`}
-                            >
-                              {t("myanmar")}
-                            </a>
+                          <Link
+                            href={asPath}
+                            locale="my"
+                            className={`${
+                              locale === "my"
+                                ? "bg-gray200 text-gray500"
+                                : "bg-white text-gray500"
+                            } py-2 px-4 text-center focus:outline-none`}
+                          >
+                            {t("myanmar")}
                           </Link>
                         </HMenu.Item>
                       </HMenu.Items>

@@ -108,6 +108,7 @@ const ShoppingCart = () => {
       }
     };
     if (auth.user) makeOrder();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOrdering, completedOrder, auth.user]);
 
   useEffect(() => {
@@ -649,6 +650,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
       messages: (await import(`../messages/common/${locale}.json`)).default,
+      locale: locale || "en",
     },
   };
 };

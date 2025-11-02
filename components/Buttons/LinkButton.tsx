@@ -30,18 +30,15 @@ const LinkButton: FC<Props> = ({
   }
 
   return (
-    <Link href={href}>
-      <a
-        role="button"
-        aria-label={aria_label}
-        className={`bg-white group text-center inline-block cursor-pointe ${
-          inverted
-            ? "hover:bg-gray500 hover:text-gray100"
-            : "hover:text-gray400"
-        } ${!noBorder && "border border-gray500"} ${btnSize} ${extraClass}`}
-      >
-        {children}
-      </a>
+    <Link
+      href={href}
+      role="button"
+      aria-label={aria_label}
+      className={`bg-white group text-center inline-block cursor-pointer ${
+        inverted ? "hover:bg-gray500 hover:text-gray100" : "hover:text-gray400"
+      } ${!noBorder && "border border-gray500"} ${btnSize} ${extraClass}`}
+    >
+      {children}
     </Link>
   );
 };

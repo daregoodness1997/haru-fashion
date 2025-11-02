@@ -50,8 +50,8 @@ const ProductCategory: React.FC<Props> = ({
         <div className="bg-lightgreen h-16 w-full flex items-center">
           <div className="app-x-padding app-max-width w-full">
             <div className="breadcrumb">
-              <Link href="/">
-                <a className="text-gray400">{t("home")}</a>
+              <Link href="/" className="text-gray400">
+                {t("home")}
               </Link>{" "}
               / <span className="capitalize">{t(category as string)}</span>
             </div>
@@ -147,6 +147,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   return {
     props: {
       messages: (await import(`../../messages/common/${locale}.json`)).default,
+      locale,
       items,
       numberOfProducts,
       page: +page,

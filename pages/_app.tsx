@@ -1,7 +1,7 @@
 import { NextComponentType, NextPageContext } from "next";
 import Router from "next/router";
 import NProgress from "nprogress";
-import { NextIntlProvider } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 
 import { ProvideCart } from "../context/cart/CartProvider";
 import { ProvideWishlist } from "../context/wishlist/WishlistProvider";
@@ -12,11 +12,9 @@ import "animate.css";
 import "nprogress/nprogress.css";
 
 // Import Swiper styles
-import "swiper/swiper.min.css";
-import "swiper/components/navigation/navigation.min.css";
-import "swiper/components/pagination/pagination.min.css";
-import "swiper/components/scrollbar/scrollbar.min.css";
-
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
 Router.events.on("routeChangeError", () => NProgress.done());
@@ -30,7 +28,11 @@ type AppCustomProps = {
 
 const MyApp = ({ Component, pageProps }: AppCustomProps) => {
   return (
-    <NextIntlProvider messages={pageProps?.messages}>
+    <NextIntlClientProvider
+      messages={pageProps?.messages}
+      locale={pageProps?.locale || "en"}
+      timeZone="UTC"
+    >
       <ProvideAuth>
         <ProvideWishlist>
           <ProvideCart>
@@ -38,7 +40,7 @@ const MyApp = ({ Component, pageProps }: AppCustomProps) => {
           </ProvideCart>
         </ProvideWishlist>
       </ProvideAuth>
-    </NextIntlProvider>
+    </NextIntlClientProvider>
   );
 };
 

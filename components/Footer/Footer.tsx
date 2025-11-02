@@ -35,15 +35,9 @@ export default function Footer() {
           <div>
             <h3 className={styles.footerHead}>{t("store")}</h3>
             <div className={styles.column}>
-              <Link href={`/product-category/women`}>
-                <a>{t("women")}</a>
-              </Link>
-              <Link href={`/product-category/men`}>
-                <a>{t("men")}</a>
-              </Link>
-              <Link href={`/product-category/bags`}>
-                <a>{t("bags")}</a>
-              </Link>
+              <Link href={`/product-category/women`}>{t("women")}</Link>
+              <Link href={`/product-category/men`}>{t("men")}</Link>
+              <Link href={`/product-category/bags`}>{t("bags")}</Link>
             </div>
           </div>
           <div>
