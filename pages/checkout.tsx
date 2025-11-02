@@ -55,7 +55,7 @@ const ShoppingCart = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
   const [orderError, setOrderError] = useState("");
-  const [sendEmail, setSendEmail] = useState(false);
+  const [sendEmail, setSendEmail] = useState(true);
 
   const products = cart.map((item) => ({
     id: item.id,
