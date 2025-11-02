@@ -1,8 +1,5 @@
 {
   "buildCommand": "prisma generate && prisma migrate deploy && next build",
-  "env": {
-    "DATABASE_URL": "@database_url"
-  },
   "rewrites": [
     {
       "source": "/:locale(en|es|fr)/:path*",

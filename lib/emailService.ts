@@ -3,16 +3,29 @@ import nodemailer from "nodemailer";
 // Exchange rate for currency conversion in emails
 const USD_TO_NGN_RATE = 1650;
 
-// Create reusable transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.EMAIL_PORT || "587"),
-  secure: process.env.EMAIL_PORT === "465", // true for 465, false for other ports
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+// Create reusable transporter with better SSL handling
+const createTransporter = () => {
+  const port = parseInt(process.env.EMAIL_PORT || "587");
+  const isSecure = port === 465;
+
+  return nodemailer.createTransport({
+    host: process.env.EMAIL_HOST || "smtp.gmail.com",
+    port: port,
+    secure: isSecure, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+    tls: {
+      // For Zoho and other providers
+      rejectUnauthorized: false,
+    },
+    logger: process.env.NODE_ENV !== "production", // Log in development
+    debug: process.env.NODE_ENV !== "production", // Debug in development
+  });
+};
+
+const transporter = createTransporter();
 
 // Helper function to generate email header/footer wrapper
 const getEmailTemplate = (content: string) => `
@@ -529,24 +542,44 @@ export async function sendEmail(
   try {
     // Validate email configuration
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
-      console.error("Email configuration missing");
+      console.error("❌ Email configuration missing");
+      console.error("EMAIL_USER:", process.env.EMAIL_USER ? "Set" : "Missing");
+      console.error(
+        "EMAIL_PASSWORD:",
+        process.env.EMAIL_PASSWORD ? "Set" : "Missing"
+      );
+      console.error(
+        "EMAIL_HOST:",
+        process.env.EMAIL_HOST || "Not set (using default)"
+      );
+      console.error(
+        "EMAIL_PORT:",
+        process.env.EMAIL_PORT || "Not set (using default)"
+      );
       return {
         success: false,
         error: "Email service not configured",
       };
     }
 
-    await transporter.sendMail({
+    console.log(`📧 Attempting to send email to: ${to}`);
+    console.log(
+      `📧 Using SMTP: ${process.env.EMAIL_HOST}:${process.env.EMAIL_PORT}`
+    );
+
+    const info = await transporter.sendMail({
       from: `"Haru Fashion" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html,
     });
 
-    console.log(`Email sent successfully to ${to}`);
+    console.log(`✅ Email sent successfully to ${to}`);
+    console.log(`Message ID: ${info.messageId}`);
     return { success: true };
   } catch (error) {
-    console.error("Error sending email:", error);
+    console.error("❌ Error sending email:", error);
+    console.error("Error details:", JSON.stringify(error, null, 2));
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
