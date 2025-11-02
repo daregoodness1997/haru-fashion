@@ -118,13 +118,7 @@ export default function Menu() {
                         onChange={handleChange}
                       />
                     </form>
-                    <Link
-                      href="/product-category/men"
-                      className="w-full text-xl hover:bg-gray100 text-left py-2"
-                      onClick={closeModal}
-                    >
-                      {t("men")}
-                    </Link>
+
                     <Link
                       href="/product-category/women"
                       className="w-full text-xl hover:bg-gray100 text-left py-2"
@@ -133,19 +127,27 @@ export default function Menu() {
                       {t("women")}
                     </Link>
                     <Link
+                      href="/product-category/material"
+                      className="w-full text-xl hover:bg-gray100 text-left py-2"
+                      onClick={closeModal}
+                    >
+                      {t("material")}
+                    </Link>
+                    <Link
                       href="/product-category/bags"
                       className="w-full text-xl hover:bg-gray100 text-left py-2"
                       onClick={closeModal}
                     >
                       {t("bags")}
                     </Link>
-                    <Link
+
+                    {/* <Link
                       href="/blogs"
                       className="w-full text-xl hover:bg-gray100 text-left py-2"
                       onClick={closeModal}
                     >
                       {t("blogs")}
-                    </Link>
+                    </Link> */}
                     <Link
                       href="/about"
                       className="w-full text-xl hover:bg-gray100 text-left py-2"

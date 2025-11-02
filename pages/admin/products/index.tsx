@@ -331,6 +331,7 @@ export default function AdminProducts() {
                     <option value="men">{t("men")}</option>
                     <option value="women">{t("women")}</option>
                     <option value="bags">{t("bags")}</option>
+                    <option value="material">{t("material")}</option>
                   </select>
                 </div>
 
