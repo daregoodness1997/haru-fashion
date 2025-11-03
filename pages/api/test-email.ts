@@ -1,11 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { sendEmail } from "../../lib/emailService";
 
-// Force Node.js runtime (required for nodemailer)
-export const config = {
-  runtime: "nodejs",
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
