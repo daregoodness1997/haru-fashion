@@ -62,7 +62,7 @@ ${content}
 export const emailTemplates = {
   // Welcome email for new users
   welcomeEmail: (fullname: string, email: string) => ({
-    subject: "Welcome to Haru Fashion! 🎉",
+    subject: "Welcome to Shunapee Fashion House! 🎉",
     html: getEmailTemplate(`
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
 <tr><td align="center" style="padding:45px 0;">
@@ -71,13 +71,13 @@ export const emailTemplates = {
       <!-- Logo -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr><td style="padding-bottom:60px;">
-          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">HARU FASHION</h1>
+          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">SHUNAPEE FASHION HOUSE</h1>
         </td></tr>
       </table>
       
       <!-- Heading -->
       <h1 style="margin:0 0 15px 0;font-family:Roboto,Arial,sans-serif;font-size:24px;font-weight:400;color:#333;line-height:26px;">
-        Welcome to Haru Fashion, ${fullname}!
+        Welcome to Shunapee Fashion House, ${fullname}!
       </h1>
       
       <!-- Content -->
@@ -111,7 +111,7 @@ export const emailTemplates = {
     <!-- Footer -->
     <tr><td style="background:#242424;padding:48px 50px;text-align:center;">
       <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:12px;color:#888;">
-        © ${new Date().getFullYear()} Haru Fashion. All rights reserved.
+        © ${new Date().getFullYear()} Shunapee Fashion House. All rights reserved.
       </p>
     </td></tr>
   </table>
@@ -122,7 +122,7 @@ export const emailTemplates = {
 
   // Admin notification for new user registration
   newUserAdminNotification: (fullname: string, email: string) => ({
-    subject: "🆕 New User Registration - Haru Fashion",
+    subject: "🆕 New User Registration - Shunapee Fashion House",
     html: getEmailTemplate(`
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
 <tr><td align="center" style="padding:45px 0;">
@@ -133,7 +133,7 @@ export const emailTemplates = {
       </h1>
       
       <p style="margin:0 0 15px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
-        A new user has registered on Haru Fashion:
+        A new user has registered on Shunapee Fashion House:
       </p>
       
       <div style="background:#FFF;padding:15px;margin:10px 0;border-left:4px solid #10b981;">
@@ -180,7 +180,7 @@ export const emailTemplates = {
     };
 
     return {
-      subject: `Order Confirmation #${orderNumber} - Haru Fashion`,
+      subject: `Order Confirmation #${orderNumber} - Shunapee Fashion House`,
       html: getEmailTemplate(`
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
 <tr><td align="center" style="padding:45px 0;">
@@ -189,7 +189,7 @@ export const emailTemplates = {
       <!-- Logo -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr><td style="padding-bottom:60px;">
-          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">HARU FASHION</h1>
+          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">SHUNAPEE FASHION HOUSE</h1>
         </td></tr>
       </table>
       
@@ -278,7 +278,7 @@ export const emailTemplates = {
     <!-- Footer -->
     <tr><td style="background:#242424;padding:48px 50px;text-align:center;">
       <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:12px;color:#888;">
-        © ${new Date().getFullYear()} Haru Fashion. All rights reserved.
+        © ${new Date().getFullYear()} Shunapee Fashion House. All rights reserved.
       </p>
     </td></tr>
   </table>
@@ -310,7 +310,7 @@ export const emailTemplates = {
     };
 
     return {
-      subject: `🛍️ New Order #${orderNumber} - Haru Fashion`,
+      subject: `🛍️ New Order #${orderNumber} - Shunapee Fashion House`,
       html: getEmailTemplate(`
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
 <tr><td align="center" style="padding:45px 0;">
@@ -436,7 +436,7 @@ export const emailTemplates = {
       <!-- Logo -->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr><td style="padding-bottom:60px;">
-          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">HARU FASHION</h1>
+          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">SHUNAPEE FASHION HOUSE</h1>
         </td></tr>
       </table>
       
@@ -522,14 +522,14 @@ export const emailTemplates = {
       }
       
       <p style="margin:30px 0 0 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
-        Thank you for shopping with Haru Fashion!
+        Thank you for shopping with Shunapee Fashion House!
       </p>
     </td></tr>
     
     <!-- Footer -->
     <tr><td style="background:#242424;padding:48px 50px;text-align:center;">
       <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:12px;color:#888;">
-        © ${new Date().getFullYear()} Haru Fashion. All rights reserved.
+        © ${new Date().getFullYear()} Shunapee Fashion House. All rights reserved.
       </p>
     </td></tr>
   </table>
@@ -582,7 +582,7 @@ export async function sendEmail(
     // Send mail - using Promise API (no callback)
     console.log("📤 Sending email...");
     const info = await transporter.sendMail({
-      from: `"Haru Fashion" <${process.env.EMAIL_USER}>`,
+      from: `"Shunapee Fashion House" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html,

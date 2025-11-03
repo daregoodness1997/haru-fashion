@@ -7,14 +7,14 @@ type Props = {
   keywords?: string;
 };
 
-// "Discover affordable and fashionable men's and women's clothing online at Haru Fashion. Free Returns ✓ 1000+ New Arrivals Dropped Daily."
+// "Discover affordable and fashionable men's and women's clothing online at Shunapee Fashion House. Free Returns ✓ 1000+ New Arrivals Dropped Daily."
 const defaultDesc =
-  "Haru Fashion e-commerce developed with Next.JS. Coded with 🖤 by Sat Naing (satnaing.dev).";
+  "Shunapee Fashion House e-commerce developed with Next.JS. Shop trendy";
 const defaultKeywords =
-  "Haru Fashion, Online Shop, E-commerce, Sat Naing, NextJS";
+  "Shunapee Fashion House, Online Shop, E-commerce, Dare Goodness, Lumenware Technologies, NextJS";
 
 const AppHeader: React.FC<Props> = ({
-  title = "Haru Fashion",
+  title = "Shunapee Fashion House",
   desc = defaultDesc,
   keywords = defaultKeywords,
 }) => {

@@ -35,13 +35,13 @@ async function testEmail() {
 
     console.log("📤 Sending test email...\n");
     const info = await transporter.sendMail({
-      from: `"Haru Fashion Test" <${process.env.EMAIL_USER}>`,
+      from: `"Shunapee Fashion House Test" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER, // Send to yourself for testing
-      subject: "Test Email from Haru Fashion",
+      subject: "Test Email from Shunapee Fashion House",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>✅ Email Configuration Successful!</h2>
-          <p>This is a test email from your Haru Fashion application.</p>
+          <p>This is a test email from your Shunapee Fashion House application.</p>
           <p>If you received this, your email service is working correctly.</p>
           <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
         </div>

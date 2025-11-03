@@ -1,9 +1,9 @@
-# Copilot Instructions for Haru-Fashion
+# Copilot Instructions for Shunapee Fashion House
 
 ## Project Overview
 
-- **Haru-Fashion** is a Next.js e-commerce web app using TypeScript, Tailwind CSS, and React Context API for state management.
-- The frontend communicates with a custom REST API backend ([Haru API](https://github.com/satnaing/haru-api)).
+- **Shunapee Fashion House** is a Next.js e-commerce web app using TypeScript, Tailwind CSS, and React Context API for state management.
+
 - Features include authentication, cart, wishlist, search, i18n (English & Burmese), and responsive design.
 
 ## Key Architecture & Patterns
@@ -37,7 +37,7 @@
 
 ## Integration Points
 
-- **Backend**: All data comes from the Haru REST API. Update endpoints in utility functions if backend changes.
+- **Backend**: All data comes from the Shunapee Fashion House REST API. Update endpoints in utility functions if backend changes.
 - **Deployment**: Vercel is used for deployment. See `README.md` for details.
 
 ## Examples

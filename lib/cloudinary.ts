@@ -15,7 +15,7 @@ cloudinary.config({
  */
 export const uploadToCloudinary = (
   fileBuffer: Buffer,
-  folder: string = "haru-fashion"
+  folder: string = "shunapee-fashion"
 ): Promise<{ secure_url: string; public_id: string }> => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
