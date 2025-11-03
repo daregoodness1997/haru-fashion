@@ -3,36 +3,15 @@ import nodemailer from "nodemailer";
 // Exchange rate for currency conversion in emails
 const USD_TO_NGN_RATE = 1650;
 
-// Create reusable transporter with better SSL handling
-const createTransporter = () => {
-  const port = parseInt(process.env.EMAIL_PORT || "587");
-  const isSecure = port === 465;
-
-  return nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || "smtp.gmail.com",
-    port: port,
-    secure: isSecure, // true for 465, false for 587
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-    tls: {
-      // For Zoho and other providers
-      rejectUnauthorized: false,
-      minVersion: "TLSv1.2",
-    },
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 10000, // 10 seconds
-    socketTimeout: 15000, // 15 seconds
-    pool: true, // Use pooled connections
-    maxConnections: 5,
-    maxMessages: 10,
-    logger: process.env.NODE_ENV !== "production", // Log in development
-    debug: process.env.NODE_ENV !== "production", // Debug in development
-  });
-};
-
-const transporter = createTransporter();
+// Create reusable transporter - simplified for Vercel
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: parseInt(process.env.EMAIL_PORT || "587"),
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
 // Helper function to generate email header/footer wrapper
 const getEmailTemplate = (content: string) => `
@@ -574,13 +553,7 @@ export async function sendEmail(
       `📧 Using SMTP: ${process.env.EMAIL_HOST}:${process.env.EMAIL_PORT}`
     );
 
-    // Verify transporter connection - using Promise API
-    console.log("🔍 Verifying SMTP connection...");
-    await transporter.verify();
-    console.log("✅ Server is ready to send messages");
-
     // Send mail - using Promise API (no callback)
-    console.log("📤 Sending email...");
     const info = await transporter.sendMail({
       from: `"Shunapee Fashion House" <${process.env.EMAIL_USER}>`,
       to,
