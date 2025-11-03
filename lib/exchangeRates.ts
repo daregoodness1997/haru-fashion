@@ -23,7 +23,6 @@ interface CachedRate {
 // Cache duration: 1 hour (3600000 ms)
 const CACHE_DURATION = 60 * 60 * 1000;
 const FALLBACK_RATE = 1650; // Fallback rate if API fails
-
 // In-memory cache (in production, consider using Redis or similar)
 let cachedRate: CachedRate | null = null;
 

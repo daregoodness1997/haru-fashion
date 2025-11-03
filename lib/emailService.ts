@@ -11,7 +11,7 @@ const createTransporter = () => {
   return nodemailer.createTransport({
     host: process.env.EMAIL_HOST || "smtp.gmail.com",
     port: port,
-    secure: isSecure, // true for 465, false for other ports
+    secure: isSecure, // true for 465, false for 587
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD,
@@ -19,7 +19,14 @@ const createTransporter = () => {
     tls: {
       // For Zoho and other providers
       rejectUnauthorized: false,
+      minVersion: "TLSv1.2",
     },
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000, // 10 seconds
+    socketTimeout: 15000, // 15 seconds
+    pool: true, // Use pooled connections
+    maxConnections: 5,
+    maxMessages: 10,
     logger: process.env.NODE_ENV !== "production", // Log in development
     debug: process.env.NODE_ENV !== "production", // Debug in development
   });
@@ -567,15 +574,42 @@ export async function sendEmail(
       `📧 Using SMTP: ${process.env.EMAIL_HOST}:${process.env.EMAIL_PORT}`
     );
 
-    const info = await transporter.sendMail({
-      from: `"Haru Fashion" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      html,
+    // Verify transporter connection
+    await new Promise((resolve, reject) => {
+      transporter.verify(function (error, success) {
+        if (error) {
+          console.error("❌ Transporter verification failed:", error);
+          reject(error);
+        } else {
+          console.log("✅ Server is ready to send messages");
+          resolve(success);
+        }
+      });
+    });
+
+    // Send mail with promisified sendMail
+    const info = await new Promise((resolve, reject) => {
+      transporter.sendMail(
+        {
+          from: `"Haru Fashion" <${process.env.EMAIL_USER}>`,
+          to,
+          subject,
+          html,
+        },
+        (error, info) => {
+          if (error) {
+            console.error("❌ SendMail error:", error);
+            reject(error);
+          } else {
+            console.log("✅ Email sent:", info);
+            resolve(info);
+          }
+        }
+      );
     });
 
     console.log(`✅ Email sent successfully to ${to}`);
-    console.log(`Message ID: ${info.messageId}`);
+    console.log(`Message ID: ${(info as any).messageId}`);
     return { success: true };
   } catch (error) {
     console.error("❌ Error sending email:", error);
