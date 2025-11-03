@@ -574,42 +574,22 @@ export async function sendEmail(
       `📧 Using SMTP: ${process.env.EMAIL_HOST}:${process.env.EMAIL_PORT}`
     );
 
-    // Verify transporter connection
-    await new Promise((resolve, reject) => {
-      transporter.verify(function (error, success) {
-        if (error) {
-          console.error("❌ Transporter verification failed:", error);
-          reject(error);
-        } else {
-          console.log("✅ Server is ready to send messages");
-          resolve(success);
-        }
-      });
-    });
+    // Verify transporter connection - using Promise API
+    console.log("🔍 Verifying SMTP connection...");
+    await transporter.verify();
+    console.log("✅ Server is ready to send messages");
 
-    // Send mail with promisified sendMail
-    const info = await new Promise((resolve, reject) => {
-      transporter.sendMail(
-        {
-          from: `"Haru Fashion" <${process.env.EMAIL_USER}>`,
-          to,
-          subject,
-          html,
-        },
-        (error, info) => {
-          if (error) {
-            console.error("❌ SendMail error:", error);
-            reject(error);
-          } else {
-            console.log("✅ Email sent:", info);
-            resolve(info);
-          }
-        }
-      );
+    // Send mail - using Promise API (no callback)
+    console.log("📤 Sending email...");
+    const info = await transporter.sendMail({
+      from: `"Haru Fashion" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
     });
 
     console.log(`✅ Email sent successfully to ${to}`);
-    console.log(`Message ID: ${(info as any).messageId}`);
+    console.log(`Message ID: ${info.messageId}`);
     return { success: true };
   } catch (error) {
     console.error("❌ Error sending email:", error);

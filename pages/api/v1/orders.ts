@@ -3,6 +3,11 @@ import prisma from "../../../lib/prisma";
 import { emailTemplates, sendEmail } from "../../../lib/emailService";
 import { Prisma } from "@prisma/client";
 
+// Force Node.js runtime (required for nodemailer)
+export const config = {
+  runtime: "nodejs",
+};
+
 // Type for order with relations
 type OrderWithRelations = Prisma.OrderGetPayload<{
   include: {
