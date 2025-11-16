@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import axios from "axios";
 import Image from "next/image";
 import { GetStaticProps } from "next";
+import Head from "next/head";
 
 import Price from "../components/Price/Price";
 import Header from "../components/Header/Header";
@@ -16,7 +17,7 @@ import { itemType } from "../context/wishlist/wishlist-type";
 import { useAuth } from "../context/AuthContext";
 
 // let w = window.innerWidth;
-type PaymentType = "CASH_ON_DELIVERY" | "BANK_TRANSFER";
+type PaymentType = "CASH_ON_DELIVERY" | "BANK_TRANSFER" | "PAYSTACK";
 type DeliveryType = "STORE_PICKUP" | "YANGON" | "OTHERS";
 
 type Order = {
@@ -56,11 +57,70 @@ const ShoppingCart = () => {
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
   const [orderError, setOrderError] = useState("");
   const [sendEmail, setSendEmail] = useState(true);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const products = cart.map((item) => ({
     id: item.id,
     quantity: item.qty,
   }));
+
+  // Convert NGN to Kobo (Paystack smallest currency unit)
+  const convertToKobo = (amount: number) => {
+    return Math.round(amount * 100);
+  };
+
+  // Convert USD to NGN for Paystack
+  const convertUSDToNGN = (usdAmount: number) => {
+    const exchangeRate = 1650; // 1 USD = 1650 NGN
+    return usdAmount * exchangeRate;
+  };
+
+  // Handle Paystack Payment
+  const handlePaystackPayment = () => {
+    setIsProcessingPayment(true);
+
+    // Calculate total in NGN
+    const totalUSD = +subtotal + deliFee;
+    const totalNGN = currency === "USD" ? convertUSDToNGN(totalUSD) : totalUSD;
+    const amountInKobo = convertToKobo(totalNGN);
+
+    // @ts-ignore
+    const handler = window.PaystackPop.setup({
+      key: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "pk_test_xxxxxx",
+      email: email,
+      amount: amountInKobo,
+      currency: "NGN",
+      ref: `SFH-${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
+      metadata: {
+        custom_fields: [
+          {
+            display_name: "Customer Name",
+            variable_name: "customer_name",
+            value: name,
+          },
+          {
+            display_name: "Phone Number",
+            variable_name: "phone_number",
+            value: phone,
+          },
+        ],
+      },
+      callback: function (response: any) {
+        // Payment successful
+        console.log("Payment successful:", response);
+        setIsProcessingPayment(false);
+        setIsOrdering(true);
+      },
+      onClose: function () {
+        // Payment cancelled
+        console.log("Payment cancelled");
+        setIsProcessingPayment(false);
+        alert("Payment was cancelled");
+      },
+    });
+
+    handler.openIframe();
+  };
 
   useEffect(() => {
     if (!isOrdering) return;
@@ -175,6 +235,10 @@ const ShoppingCart = () => {
   return (
     <div>
       {/* ===== Head Section ===== */}
+      <Head>
+        <title>Shopping Cart - Shunapee Fashion House Fashion</title>
+        <script src="https://js.paystack.co/v1/inline.js" async></script>
+      </Head>
       <Header title={`Shopping Cart - Shunapee Fashion House Fashion`} />
 
       <main id="main-content">
@@ -506,6 +570,53 @@ const ShoppingCart = () => {
                         </span>
                       </span>
                     </label>
+                    <label
+                      htmlFor="plan-paystack"
+                      className="relative flex flex-col bg-white p-5 rounded-lg shadow-md border border-gray300 cursor-pointer"
+                    >
+                      <span className="font-semibold text-gray-500 leading-tight capitalize flex items-center gap-2">
+                        Pay with Paystack
+                        <svg
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M4 4h16v16H4z" fill="#00C3F7" />
+                        </svg>
+                      </span>
+                      <span className="text-gray400 text-sm mt-1">
+                        Pay securely with your card via Paystack
+                      </span>
+                      <input
+                        type="radio"
+                        name="plan"
+                        id="plan-paystack"
+                        value="PAYSTACK"
+                        className="absolute h-0 w-0 appearance-none"
+                        onChange={() => setPaymentMethod("PAYSTACK")}
+                      />
+                      <span
+                        aria-hidden="true"
+                        className={`${
+                          paymentMethod === "PAYSTACK" ? "block" : "hidden"
+                        } absolute inset-0 border-2 border-gray500 bg-opacity-10 rounded-lg`}
+                      >
+                        <span className="absolute top-4 right-4 h-6 w-6 inline-flex items-center justify-center rounded-full bg-gray100">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            className="h-5 w-5 text-green-600"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </span>
+                    </label>
                   </div>
 
                   <div className="my-8">
@@ -533,11 +644,23 @@ const ShoppingCart = () => {
                 </div>
 
                 <Button
-                  value={t("place_order")}
+                  value={
+                    isProcessingPayment
+                      ? "Processing Payment..."
+                      : paymentMethod === "PAYSTACK"
+                      ? "Pay with Paystack"
+                      : t("place_order")
+                  }
                   size="xl"
                   extraClass={`w-full`}
-                  onClick={() => setIsOrdering(true)}
-                  disabled={disableOrder}
+                  onClick={() => {
+                    if (paymentMethod === "PAYSTACK") {
+                      handlePaystackPayment();
+                    } else {
+                      setIsOrdering(true);
+                    }
+                  }}
+                  disabled={disableOrder || isProcessingPayment}
                 />
               </div>
 
