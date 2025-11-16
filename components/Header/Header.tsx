@@ -87,7 +87,7 @@ const Header: React.FC<Props> = ({ title }) => {
       >
         <div className="app-max-width w-full">
           <div
-            className={`flex justify-between align-baseline app-x-padding ${styles.mainMenu}`}
+            className={`flex justify-between items-center app-x-padding ${styles.mainMenu}`}
           >
             {/* Hamburger Menu and Mobile Nav */}
             <div className="flex-1 lg:flex-0 lg:hidden">
@@ -122,7 +122,7 @@ const Header: React.FC<Props> = ({ title }) => {
                     src="/logo.svg"
                     alt="Picture of the author"
                     width={220}
-                    height={50}
+                    height={90}
                     layout="responsive"
                   />
                 </Link>

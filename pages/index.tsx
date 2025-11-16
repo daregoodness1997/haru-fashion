@@ -24,6 +24,7 @@ type Props = {
 
 const Home: React.FC<Props> = ({ products }) => {
   const t = useTranslations("Index");
+  const tNav = useTranslations("Navigation");
   const [currentItems, setCurrentItems] = useState(products);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -93,13 +94,13 @@ const Home: React.FC<Props> = ({ products }) => {
             <div className="w-full">
               <OverlayContainer
                 imgSrc="/bg-img/banner_minipage3.jpg"
-                imgAlt="Men Collection"
+                imgAlt="Materials"
               >
                 <LinkButton
-                  href="/product-category/men"
+                  href="/product-category/material"
                   extraClass="absolute bottom-10-per z-20"
                 >
-                  {t("men_collection")}
+                  {tNav("material")}
                 </LinkButton>
               </OverlayContainer>
             </div>
@@ -125,10 +126,10 @@ const Home: React.FC<Props> = ({ products }) => {
         )}
 
         {/* ===== Testimonial Section ===== */}
-        <section className="w-full hidden h-full py-16 md:flex flex-col items-center bg-lightgreen">
+        {/* <section className="w-full hidden h-full py-16 md:flex flex-col items-center bg-lightgreen">
           <h2 className="text-3xl">{t("testimonial")}</h2>
           <TestiSlider />
-        </section>
+        </section> */}
 
         {/* ===== Featured Products Section ===== */}
         <section className="app-max-width app-x-padding my-16 flex flex-col">
