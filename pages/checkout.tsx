@@ -175,7 +175,7 @@ const ShoppingCart = () => {
   return (
     <div>
       {/* ===== Head Section ===== */}
-      <Header title={`Shopping Cart - Haru Fashion`} />
+      <Header title={`Shopping Cart - Shunapee Fashion House Fashion`} />
 
       <main id="main-content">
         {/* ===== Heading & Continue Shopping */}
@@ -646,7 +646,7 @@ const ShoppingCart = () => {
                       <Image
                         className="justify-center"
                         src="/logo.svg"
-                        alt="Haru Fashion"
+                        alt="Shunapee Fashion House Fashion"
                         width={220}
                         height={50}
                         layout="responsive"

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Haru Fashion admin panel now supports direct image uploads to Cloudinary for product management. This replaces the previous URL-based image input with a proper file upload system.
+The Shunapee Fashion House Fashion admin panel now supports direct image uploads to Cloudinary for product management. This replaces the previous URL-based image input with a proper file upload system.
 
 ## Features
 
@@ -66,7 +66,7 @@ CLOUDINARY_API_SECRET="your_api_secret"
 A super admin user has been seeded into the database:
 
 ```
-Email: admin@harufashion.com
+Email: admin@Shunapee Fashion Housefashion.com
 Password: admin123
 ```
 
@@ -101,7 +101,7 @@ npm run dev
 
 ### 4. Test Upload
 
-1. Login as admin: `admin@harufashion.com` / `admin123`
+1. Login as admin: `admin@Shunapee Fashion Housefashion.com` / `admin123`
 2. Navigate to Admin Dashboard → Manage Products
 3. Click "Add New Product"
 4. Fill in product details
@@ -129,7 +129,7 @@ graph TD
 - **Accepted Formats:** JPEG, PNG, GIF, WebP
 - **Optimization:** Automatically resized to max 1000x1000px
 - **Quality:** Auto-optimized by Cloudinary
-- **Storage Location:** `haru-fashion/products/` folder in Cloudinary
+- **Storage Location:** `Shunapee Fashion House-fashion/products/` folder in Cloudinary
 
 ## API Endpoints
 
@@ -147,7 +147,7 @@ Body: FormData with 'image' field
   "success": true,
   "data": {
     "url": "https://res.cloudinary.com/your-cloud/image/upload/...",
-    "publicId": "haru-fashion/products/abc123"
+    "publicId": "Shunapee Fashion House-fashion/products/abc123"
   }
 }
 ```
@@ -223,7 +223,7 @@ pages/admin/products/
 
 Access your uploaded images:
 1. Go to https://cloudinary.com/console/media_library
-2. Navigate to `haru-fashion/products/` folder
+2. Navigate to `Shunapee Fashion House-fashion/products/` folder
 3. View all uploaded product images
 
 ## Cost Considerations

@@ -73,7 +73,7 @@ export default function AdminOrders() {
   if (!auth.user || loading) {
     return (
       <div>
-        <Header title="Manage Orders - Admin - Haru Fashion" />
+        <Header title="Manage Orders - Admin - Shunapee Fashion House Fashion" />
         <main id="main-content">
           <div className="app-x-padding app-max-width my-8 text-center">
             <p>{t("loading")}</p>
@@ -86,7 +86,7 @@ export default function AdminOrders() {
 
   return (
     <div>
-      <Header title="Manage Orders - Admin - Haru Fashion" />
+      <Header title="Manage Orders - Admin - Shunapee Fashion House Fashion" />
 
       <main id="main-content">
         {/* Breadcrumb */}

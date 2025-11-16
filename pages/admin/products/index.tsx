@@ -231,7 +231,7 @@ export default function AdminProducts() {
   if (!auth.user || loading) {
     return (
       <div>
-        <Header title="Manage Products - Admin - Haru Fashion" />
+        <Header title="Manage Products - Admin - Shunapee Fashion House Fashion" />
         <main id="main-content">
           <div className="app-x-padding app-max-width my-8 text-center">
             <p>{t("loading")}</p>
@@ -244,7 +244,7 @@ export default function AdminProducts() {
 
   return (
     <div>
-      <Header title="Manage Products - Admin - Haru Fashion" />
+      <Header title="Manage Products - Admin - Shunapee Fashion House Fashion" />
 
       <main id="main-content">
         {/* Breadcrumb */}

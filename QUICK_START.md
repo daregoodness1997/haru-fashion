@@ -30,7 +30,7 @@ brew services list | grep postgresql
 psql postgres
 
 # Run these commands:
-CREATE DATABASE haru_fashion;
+CREATE DATABASE Shunapee Fashion House_fashion;
 \q
 ```
 
@@ -39,7 +39,7 @@ CREATE DATABASE haru_fashion;
 The `.env.local` file already has a DATABASE_URL. Update it if needed:
 
 ```env
-DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/haru_fashion?schema=public"
+DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@localhost:5432/Shunapee Fashion House_fashion?schema=public"
 ```
 
 Replace `YOUR_PASSWORD` with your PostgreSQL password (default is often empty or "postgres")
@@ -93,7 +93,7 @@ Visit `http://localhost:3000` and test:
 ## ✅ Success Checklist
 
 - [ ] PostgreSQL is running
-- [ ] Database "haru_fashion" created
+- [ ] Database "Shunapee Fashion House_fashion" created
 - [ ] DATABASE_URL configured in .env.local
 - [ ] `npm run prisma:generate` completed
 - [ ] `npm run prisma:migrate` completed
@@ -115,13 +115,13 @@ brew services restart postgresql@15
 ### "Database does not exist"
 ```bash
 # Create the database
-psql postgres -c "CREATE DATABASE haru_fashion;"
+psql postgres -c "CREATE DATABASE Shunapee Fashion House_fashion;"
 ```
 
 ### "Password authentication failed"
 Update DATABASE_URL in `.env.local` with correct password:
 ```env
-DATABASE_URL="postgresql://postgres:YOUR_ACTUAL_PASSWORD@localhost:5432/haru_fashion?schema=public"
+DATABASE_URL="postgresql://postgres:YOUR_ACTUAL_PASSWORD@localhost:5432/Shunapee Fashion House_fashion?schema=public"
 ```
 
 ### "Prisma Client not found"
@@ -142,7 +142,7 @@ npx prisma migrate reset
 npx prisma migrate status
 
 # View database schema
-psql haru_fashion -c "\dt"
+psql Shunapee Fashion House_fashion -c "\dt"
 ```
 
 ## 🎯 What's Next?

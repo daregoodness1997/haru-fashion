@@ -4,7 +4,7 @@
 
 ### Login Credentials
 ```
-📧 Email: admin@harufashion.com
+📧 Email: admin@Shunapee Fashion Housefashion.com
 🔑 Password: admin123
 ```
 

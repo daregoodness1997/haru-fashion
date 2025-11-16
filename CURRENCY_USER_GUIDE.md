@@ -2,7 +2,7 @@
 
 ## 🌍 Multi-Currency Support
 
-Haru Fashion now supports dual currency display: **US Dollar (USD)** and **Nigerian Naira (NGN)**.
+Shunapee Fashion House Fashion now supports dual currency display: **US Dollar (USD)** and **Nigerian Naira (NGN)**.
 
 ---
 

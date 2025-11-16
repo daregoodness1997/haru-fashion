@@ -33,11 +33,11 @@ Download and install from [PostgreSQL Downloads](https://www.postgresql.org/down
 psql postgres
 
 # Create database
-CREATE DATABASE haru_fashion;
+CREATE DATABASE Shunapee Fashion House_fashion;
 
 # Create user (optional)
-CREATE USER haru_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE haru_fashion TO haru_user;
+CREATE USER Shunapee Fashion House_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE Shunapee Fashion House_fashion TO Shunapee Fashion House_user;
 
 # Exit psql
 \q
@@ -52,14 +52,14 @@ cp .env.example .env.local
 
 Edit `.env.local` and update the `DATABASE_URL`:
 ```env
-DATABASE_URL="postgresql://username:password@localhost:5432/haru_fashion?schema=public"
+DATABASE_URL="postgresql://username:password@localhost:5432/Shunapee Fashion House_fashion?schema=public"
 ```
 
 Replace:
 - `username` with your PostgreSQL username (default: `postgres`)
 - `password` with your PostgreSQL password
 - `localhost:5432` with your PostgreSQL host and port
-- `haru_fashion` with your database name
+- `Shunapee Fashion House_fashion` with your database name
 
 ### 4. Run Prisma Migrations
 
@@ -148,8 +148,8 @@ If you get permission errors:
 ```bash
 # Grant all privileges
 psql postgres
-GRANT ALL PRIVILEGES ON DATABASE haru_fashion TO your_username;
-ALTER DATABASE haru_fashion OWNER TO your_username;
+GRANT ALL PRIVILEGES ON DATABASE Shunapee Fashion House_fashion TO your_username;
+ALTER DATABASE Shunapee Fashion House_fashion OWNER TO your_username;
 \q
 ```
 
