@@ -80,7 +80,7 @@ const Orders: React.FC<Props> = ({ orders }) => {
   if (!auth.user) {
     return (
       <div>
-        <Header title="My Orders - Haru Fashion" />
+        <Header title="My Orders - Shunapee Fashion House Fashion" />
         <main className="app-max-width app-x-padding my-16 text-center">
           <h1 className="text-3xl mb-4">{t("please_login")}</h1>
           <Link href="/" className="text-blue-600 hover:underline">
@@ -94,7 +94,7 @@ const Orders: React.FC<Props> = ({ orders }) => {
 
   return (
     <div>
-      <Header title="My Orders - Haru Fashion" />
+      <Header title="My Orders - Shunapee Fashion House Fashion" />
 
       <main id="main-content">
         {/* Breadcrumb Section */}

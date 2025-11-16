@@ -52,6 +52,7 @@ const LoginForm: FC<Props> = ({ extraClass, children }) => {
       modalBox = (
         <ForgotPassword
           onLogin={() => setCurrentPage("login")}
+          onClose={closeModal}
           errorMsg={errorMsg}
           setErrorMsg={setErrorMsg}
           setSuccessMsg={setSuccessMsg}

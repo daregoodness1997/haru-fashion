@@ -1,17 +1,13 @@
-import nodemailer from "nodemailer";
-
 // Exchange rate for currency conversion in emails
 const USD_TO_NGN_RATE = 1650;
 
-// Create reusable transporter - simplified for Vercel
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: parseInt(process.env.EMAIL_PORT || "587"),
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+// Brevo API configuration
+const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_SENDER_EMAIL =
+  process.env.BREVO_SENDER_EMAIL || process.env.EMAIL_USER;
+const BREVO_SENDER_NAME =
+  process.env.BREVO_SENDER_NAME || "Shunapee Fashion House";
 
 // Helper function to generate email header/footer wrapper
 const getEmailTemplate = (content: string) => `
@@ -85,6 +81,77 @@ export const emailTemplates = {
           </a>
         </td></tr>
       </table>
+    </td></tr>
+    
+    <!-- Footer -->
+    <tr><td style="background:#242424;padding:48px 50px;text-align:center;">
+      <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:12px;color:#888;">
+        © ${new Date().getFullYear()} Shunapee Fashion House. All rights reserved.
+      </p>
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+    `),
+  }),
+
+  // Password reset email
+  passwordResetEmail: (fullname: string, resetToken: string) => ({
+    subject: "Reset Your Password - Shunapee Fashion House",
+    html: getEmailTemplate(`
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center" style="padding:45px 0;">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;background:#F8F8F8;">
+    <tr><td style="padding:60px 50px;">
+      <!-- Logo -->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding-bottom:60px;">
+          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">SHUNAPEE FASHION HOUSE</h1>
+        </td></tr>
+      </table>
+      
+      <!-- Heading -->
+      <h1 style="margin:0 0 15px 0;font-family:Roboto,Arial,sans-serif;font-size:24px;font-weight:400;color:#333;line-height:26px;">
+        Reset Your Password
+      </h1>
+      
+      <!-- Content -->
+      <p style="margin:0 0 22px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;line-height:22px;">
+        Hi ${fullname},
+      </p>
+      
+      <p style="margin:0 0 22px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;line-height:22px;">
+        We received a request to reset your password. Click the button below to create a new password:
+      </p>
+      
+      <!-- Button -->
+      <table role="presentation" cellpadding="0" cellspacing="0">
+        <tr><td style="background:#333;padding:10px;text-align:center;width:250px;">
+          <a href="${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3000"
+          }/reset-password?token=${resetToken}" style="display:block;font-family:Roboto,Arial,sans-serif;font-size:16px;font-weight:700;color:#FFF;text-decoration:none;">
+            RESET PASSWORD
+          </a>
+        </td></tr>
+      </table>
+      
+      <p style="margin:30px 0 10px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;line-height:22px;">
+        Or copy and paste this link into your browser:
+      </p>
+      
+      <p style="margin:0 0 22px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;line-height:22px;word-break:break-all;">
+        ${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3000"
+        }/reset-password?token=${resetToken}
+      </p>
+      
+      <p style="margin:0 0 22px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;line-height:22px;">
+        This link will expire in 1 hour for security reasons.
+      </p>
+      
+      <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;line-height:22px;">
+        If you didn't request this password reset, please ignore this email or contact us if you have concerns.
+      </p>
     </td></tr>
     
     <!-- Footer -->
@@ -519,53 +586,70 @@ export const emailTemplates = {
   },
 };
 
-// Send email function
+// Send email function using Brevo API
 export async function sendEmail(
   to: string,
   subject: string,
   html: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // Validate email configuration
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
-      console.error("❌ Email configuration missing");
-      console.error("EMAIL_USER:", process.env.EMAIL_USER ? "Set" : "Missing");
+    // Validate Brevo API configuration
+    if (!BREVO_API_KEY || !BREVO_SENDER_EMAIL) {
+      console.error("❌ Brevo email configuration missing");
+      console.error("BREVO_API_KEY:", BREVO_API_KEY ? "Set" : "Missing");
       console.error(
-        "EMAIL_PASSWORD:",
-        process.env.EMAIL_PASSWORD ? "Set" : "Missing"
-      );
-      console.error(
-        "EMAIL_HOST:",
-        process.env.EMAIL_HOST || "Not set (using default)"
-      );
-      console.error(
-        "EMAIL_PORT:",
-        process.env.EMAIL_PORT || "Not set (using default)"
+        "BREVO_SENDER_EMAIL:",
+        BREVO_SENDER_EMAIL ? "Set" : "Missing"
       );
       return {
         success: false,
-        error: "Email service not configured",
+        error:
+          "Brevo email service not configured. Please set BREVO_API_KEY and BREVO_SENDER_EMAIL environment variables.",
       };
     }
 
-    console.log(`📧 Attempting to send email to: ${to}`);
-    console.log(
-      `📧 Using SMTP: ${process.env.EMAIL_HOST}:${process.env.EMAIL_PORT}`
-    );
+    console.log(`📧 Attempting to send email via Brevo to: ${to}`);
 
-    // Send mail - using Promise API (no callback)
-    const info = await transporter.sendMail({
-      from: `"Shunapee Fashion House" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      html,
+    // Prepare Brevo API request
+    const response = await fetch(BREVO_API_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "api-key": BREVO_API_KEY,
+      },
+      body: JSON.stringify({
+        sender: {
+          name: BREVO_SENDER_NAME,
+          email: BREVO_SENDER_EMAIL,
+        },
+        to: [
+          {
+            email: to,
+          },
+        ],
+        subject: subject,
+        htmlContent: html,
+      }),
     });
 
+    if (!response.ok) {
+      const errorData = await response
+        .json()
+        .catch(() => ({ message: "Unknown error" }));
+      console.error("❌ Brevo API error:", errorData);
+      return {
+        success: false,
+        error: `Brevo API error: ${errorData.message || response.statusText}`,
+      };
+    }
+
+    const data = await response.json();
     console.log(`✅ Email sent successfully to ${to}`);
-    console.log(`Message ID: ${info.messageId}`);
+    console.log(`Message ID: ${data.messageId}`);
     return { success: true };
   } catch (error) {
-    console.error("❌ Error sending email:", error);
+    console.error("❌ Error sending email via Brevo:", error);
     console.error("Error details:", JSON.stringify(error, null, 2));
     return {
       success: false,

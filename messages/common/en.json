@@ -98,7 +98,7 @@
     "email_already_exists": "Email already exists",
     "error_occurs": "An error occurs",
     "email_address": "Email Address",
-    "form_note": "Note! By submitting this form, you will automatically sign up for Haru Fashion Shop",
+    "form_note": "Note! By submitting this form, you will automatically sign up for Shunapee Fashion House Fashion Shop",
 
     "thank_you_note": "Thank you. We receive your order",
     "order_id": "Order ID",
@@ -177,6 +177,7 @@
     "incorrect_email_password": "Incorrect email or password",
     "login_successful": "Login Successful",
     "register_successful": "Register Successful",
+    "forgot_password_success": "Password reset link sent! Please check your email.",
     "profile": "Profile"
   },
   "Search": {

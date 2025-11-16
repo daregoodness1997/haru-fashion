@@ -138,7 +138,7 @@ const Profile = () => {
 
   return (
     <div>
-      <Header title="My Profile - Haru Fashion" />
+      <Header title="My Profile - Shunapee Fashion House Fashion" />
 
       <main id="main-content">
         {/* Breadcrumb Section */}

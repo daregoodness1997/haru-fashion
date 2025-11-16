@@ -242,7 +242,7 @@ This document outlines comprehensive tests for the USD ↔ NGN currency conversi
 3. Check email received
 
 **Expected:**
-- Subject: "Order Confirmation #XXX - Haru Fashion"
+- Subject: "Order Confirmation #XXX - Shunapee Fashion House Fashion"
 - All prices show $ symbol
 - Item prices: $X.XX
 - Total: $X.XX
@@ -265,7 +265,7 @@ This document outlines comprehensive tests for the USD ↔ NGN currency conversi
 3. Check admin email
 
 **Expected:**
-- Subject: "🛍️ New Order #XXX - Haru Fashion"
+- Subject: "🛍️ New Order #XXX - Shunapee Fashion House Fashion"
 - All prices in USD format
 - Item details correct
 

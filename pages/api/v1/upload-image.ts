@@ -70,7 +70,7 @@ export default async function handler(
     }
 
     // Upload to Cloudinary
-    const result = await uploadToCloudinary(file.buffer, "haru-fashion/products");
+    const result = await uploadToCloudinary(file.buffer, "Shunapee Fashion House-fashion/products");
 
     return res.status(200).json({
       success: true,

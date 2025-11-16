@@ -1,4 +1,4 @@
-# 📧 Email Notification System - Haru Fashion
+# 📧 Email Notification System - Shunapee Fashion House Fashion
 
 ## Overview
 Automated email notification system for user registrations and order placements. Sends professional HTML emails to customers and admin notifications.
@@ -47,7 +47,7 @@ Automated email notification system for user registrations and order placements.
 2. **Create App Password:**
    - Visit https://myaccount.google.com/apppasswords
    - Select "Mail" and "Other (Custom name)"
-   - Name it "Haru Fashion"
+   - Name it "Shunapee Fashion House Fashion"
    - Copy the 16-character password
 
 3. **Update Environment Variables:**
@@ -56,7 +56,7 @@ Automated email notification system for user registrations and order placements.
    EMAIL_PORT="587"
    EMAIL_USER="your-gmail@gmail.com"
    EMAIL_PASSWORD="your-16-char-app-password"
-   ADMIN_EMAIL="admin@harufashion.com"
+   ADMIN_EMAIL="admin@Shunapee Fashion Housefashion.com"
    ```
 
 #### Option B: Other Email Providers
@@ -94,7 +94,7 @@ EMAIL_PASSWORD="your-password"
    EMAIL_PORT="587"
    EMAIL_USER="your-email@gmail.com"
    EMAIL_PASSWORD="your-app-password"
-   ADMIN_EMAIL="admin@harufashion.com"
+   ADMIN_EMAIL="admin@Shunapee Fashion Housefashion.com"
    ```
 
 2. **Update `.env.local` (if using):**
@@ -112,7 +112,7 @@ EMAIL_PASSWORD="your-password"
 ### 1. Welcome Email
 **Triggered:** User registration  
 **Recipient:** New user  
-**Subject:** "Welcome to Haru Fashion! 🎉"
+**Subject:** "Welcome to Shunapee Fashion House Fashion! 🎉"
 
 **Content:**
 - Personalized greeting
@@ -124,7 +124,7 @@ EMAIL_PASSWORD="your-password"
 ### 2. Admin Registration Notification
 **Triggered:** User registration  
 **Recipient:** Admin (from ADMIN_EMAIL env)  
-**Subject:** "🆕 New User Registration - Haru Fashion"
+**Subject:** "🆕 New User Registration - Shunapee Fashion House Fashion"
 
 **Content:**
 - New user's name and email
@@ -134,7 +134,7 @@ EMAIL_PASSWORD="your-password"
 ### 3. Order Confirmation
 **Triggered:** Order placement  
 **Recipient:** Customer  
-**Subject:** "Order Confirmation #[OrderNumber] - Haru Fashion"
+**Subject:** "Order Confirmation #[OrderNumber] - Shunapee Fashion House Fashion"
 
 **Content:**
 - Order number
@@ -147,7 +147,7 @@ EMAIL_PASSWORD="your-password"
 ### 4. Admin Order Notification
 **Triggered:** Order placement  
 **Recipient:** Admin (from ADMIN_EMAIL env)  
-**Subject:** "🛍️ New Order #[OrderNumber] - Haru Fashion"
+**Subject:** "🛍️ New Order #[OrderNumber] - Shunapee Fashion House Fashion"
 
 **Content:**
 - Customer name and email

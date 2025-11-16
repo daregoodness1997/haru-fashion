@@ -20,13 +20,13 @@ export default async function handler(
 
     const result = await sendEmail(
       to,
-      "Test Email from Haru Fashion",
+      "Test Email from Shunapee Fashion House Fashion",
       `
         <h1>Test Email</h1>
         <p>This is a test email to verify the email configuration is working.</p>
         <p>If you received this, the email service is configured correctly!</p>
         <hr>
-        <p><small>Sent from Haru Fashion</small></p>
+        <p><small>Sent from Shunapee Fashion House Fashion</small></p>
       `
     );
 

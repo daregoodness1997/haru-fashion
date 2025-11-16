@@ -81,7 +81,7 @@ export default function AdminDashboard() {
   if (!auth.user || loading) {
     return (
       <div>
-        <Header title="Admin Dashboard - Haru Fashion" />
+        <Header title="Admin Dashboard - Shunapee Fashion House Fashion" />
         <main id="main-content">
           <div className="app-x-padding app-max-width my-8 text-center">
             <p>{t("loading")}</p>
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <Header title="Admin Dashboard - Haru Fashion" />
+      <Header title="Admin Dashboard - Shunapee Fashion House Fashion" />
 
       <main id="main-content">
         {/* Breadcrumb */}

@@ -52,7 +52,7 @@ const OrderDetail: React.FC<Props> = ({ order }) => {
   if (!order) {
     return (
       <div>
-        <Header title="Order Not Found - Haru Fashion" />
+        <Header title="Order Not Found - Shunapee Fashion House Fashion" />
         <main className="app-max-width app-x-padding my-16 text-center">
           <h1 className="text-3xl mb-4">{t("order_not_found")}</h1>
           <Link href="/orders" className="text-blue-600 hover:underline">
@@ -100,7 +100,7 @@ const OrderDetail: React.FC<Props> = ({ order }) => {
 
   return (
     <div>
-      <Header title={`Order #${order.orderNumber} - Haru Fashion`} />
+      <Header title={`Order #${order.orderNumber} - Shunapee Fashion House Fashion`} />
 
       <main id="main-content">
         {/* Breadcrumb Section */}

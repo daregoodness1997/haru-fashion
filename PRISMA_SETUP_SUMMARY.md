@@ -87,7 +87,7 @@ brew services start postgresql@15
 
 ```bash
 psql postgres
-CREATE DATABASE haru_fashion;
+CREATE DATABASE Shunapee Fashion House_fashion;
 \q
 ```
 
@@ -99,7 +99,7 @@ cp .env.example .env.local
 
 Edit `.env.local`:
 ```env
-DATABASE_URL="postgresql://postgres:password@localhost:5432/haru_fashion?schema=public"
+DATABASE_URL="postgresql://postgres:password@localhost:5432/Shunapee Fashion House_fashion?schema=public"
 NEXT_PUBLIC_BACKEND_URL="http://localhost:3000"
 ```
 

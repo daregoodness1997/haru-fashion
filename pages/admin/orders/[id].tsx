@@ -81,7 +81,7 @@ export default function AdminOrderDetail() {
   if (!auth.user || loading || !order) {
     return (
       <div>
-        <Header title="Order Details - Admin - Haru Fashion" />
+        <Header title="Order Details - Admin - Shunapee Fashion House Fashion" />
         <main id="main-content">
           <div className="app-x-padding app-max-width my-8 text-center">
             <p>{t("loading")}</p>
@@ -94,7 +94,7 @@ export default function AdminOrderDetail() {
 
   return (
     <div>
-      <Header title={`Order #${order.orderNumber} - Admin - Haru Fashion`} />
+      <Header title={`Order #${order.orderNumber} - Admin - Shunapee Fashion House Fashion`} />
 
       <main id="main-content">
         {/* Breadcrumb */}

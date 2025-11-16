@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Haru Fashion admin panel provides super admin capabilities for managing products and orders. Admin users can:
+The Shunapee Fashion House Fashion admin panel provides super admin capabilities for managing products and orders. Admin users can:
 
 - View dashboard with order and product statistics
 - Manage orders (view, update status, add tracking numbers)
