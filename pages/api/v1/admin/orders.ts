@@ -215,7 +215,7 @@ export default async function handler(
         console.log("ℹ️ Email notification skipped:", {
           statusProvided: !!status,
           statusChanged: status && status !== existingOrder.status,
-          emailAvailable: !!existingOrder.customer.email,
+          emailAvailable: !!customerEmail,
         });
       }
 
