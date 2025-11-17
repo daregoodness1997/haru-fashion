@@ -1,5 +1,6 @@
 import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { GetStaticProps } from "next";
 import { useTranslations } from "next-intl";
 import { Dialog, Transition } from "@headlessui/react";
@@ -32,6 +33,8 @@ const ServiceRequests = () => {
   const [selectedRequest, setSelectedRequest] = useState<ServiceRequest | null>(
     null
   );
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     if (!auth.user?.isAdmin) {
@@ -109,6 +112,17 @@ const ServiceRequests = () => {
       ? requests
       : requests.filter((req) => req.status === filter);
 
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedRequests = filteredRequests.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
+
   if (loading) {
     return (
       <div>
@@ -123,6 +137,22 @@ const ServiceRequests = () => {
   return (
     <div>
       <Header title="Service Requests - Admin" />
+
+      {/* Breadcrumb */}
+      <div className="bg-lightgreen h-16 w-full flex items-center">
+        <div className="app-x-padding app-max-width w-full">
+          <div className="breadcrumb">
+            <Link href="/" className="text-gray400">
+              {t("home")}
+            </Link>{" "}
+            /{" "}
+            <Link href="/admin" className="text-gray400">
+              {t("admin")}
+            </Link>{" "}
+            / <span className="capitalize">{t("service_requests")}</span>
+          </div>
+        </div>
+      </div>
 
       <main className="app-max-width app-x-padding my-10">
         <div className="mb-8">
@@ -204,7 +234,7 @@ const ServiceRequests = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredRequests.map((request) => (
+                {paginatedRequests.map((request) => (
                   <tr
                     key={request.id}
                     className="hover:bg-gray-50 transition-colors"
@@ -250,6 +280,31 @@ const ServiceRequests = () => {
           {filteredRequests.length === 0 && (
             <div className="text-center py-12 text-gray-500">
               {t("no_service_requests")}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-6 mb-4 flex justify-center items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 border-2 border-gray300 hover:border-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              >
+                {t("previous")}
+              </button>
+              <span className="px-4 py-2 text-gray-700">
+                {t("page")} {currentPage} {t("of")} {totalPages}
+              </span>
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 border-2 border-gray300 hover:border-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              >
+                {t("next")}
+              </button>
             </div>
           )}
         </div>
