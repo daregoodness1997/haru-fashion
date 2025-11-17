@@ -15,11 +15,19 @@ Paystack payment integration has been added to the checkout page, allowing custo
 1. Customer selects "Pay with Paystack" option
 2. Fills in delivery and contact information
 3. Clicks "Pay with Paystack" button
-4. Paystack popup opens with secure payment form
-5. Customer enters card details
-6. Payment is processed by Paystack
-7. On success, order is created and confirmation shown
-8. On cancellation, customer can retry
+4. **Order is created with status "pending_payment"**
+5. Paystack popup opens with secure payment form
+6. Customer enters card details
+7. Payment is processed by Paystack
+8. **On success:**
+   - Order status updated to "paid"
+   - Payment reference stored
+   - Order confirmation shown
+   - Cart cleared
+9. **On cancellation:**
+   - Order remains in "pending_payment" status
+   - "Retry Payment" button shown
+   - Customer can retry without creating new order
 
 ### 3. Currency Handling
 - Paystack only accepts NGN (Nigerian Naira)

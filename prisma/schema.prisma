@@ -58,8 +58,11 @@ model Product {
 model Order {
   id              Int         @id @default(autoincrement())
   orderNumber     Int         @unique @default(autoincrement())
-  customerId      Int
-  customer        User        @relation(fields: [customerId], references: [id])
+  customerId      Int?
+  customer        User?       @relation(fields: [customerId], references: [id])
+  customerName    String?
+  customerEmail   String?
+  customerPhone   String?
   shippingAddress String
   township        String?
   city            String?

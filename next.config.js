@@ -5,7 +5,12 @@ const nextConfig = {
   },
   reactStrictMode: true,
   compiler: {
-    removeConsole: true,
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+  env: {
+    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || "",
+    NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY:
+      process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "",
   },
   images: {
     remotePatterns: [

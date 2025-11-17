@@ -106,14 +106,16 @@ export default async function handler(
       );
 
       // Send email notification if status changed
-      if (
-        status &&
-        status !== currentOrder.status &&
-        currentOrder.customer.email
-      ) {
+      // For guest orders, use the customerEmail from the order; for user orders, use customer.email
+      const customerEmail =
+        currentOrder.customer?.email || currentOrder.customerEmail;
+      const customerName =
+        currentOrder.customer?.fullname || currentOrder.customerName;
+
+      if (status && status !== currentOrder.status && customerEmail) {
         console.log("📧 Status changed, sending email notification...");
         const statusEmailTemplate = emailTemplates.orderStatusUpdate(
-          currentOrder.customer.fullname,
+          customerName || "Customer",
           currentOrder.orderNumber,
           status,
           trackingNumber,
@@ -121,7 +123,7 @@ export default async function handler(
         );
 
         sendEmail(
-          currentOrder.customer.email,
+          customerEmail,
           statusEmailTemplate.subject,
           statusEmailTemplate.html
         )

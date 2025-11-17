@@ -23,6 +23,9 @@ export default async function handler(
     try {
       const {
         customerId,
+        customerName,
+        customerEmail,
+        customerPhone,
         shippingAddress,
         totalPrice,
         deliveryDate,
@@ -31,11 +34,15 @@ export default async function handler(
         products,
         sendEmail: shouldSendEmail,
         currency,
+        status,
       } = req.body;
 
       // Debug logging
       console.log("📦 Creating order with data:", {
         customerId,
+        customerName,
+        customerEmail,
+        customerPhone,
         shippingAddress,
         totalPrice,
         deliveryDate,
@@ -47,16 +54,19 @@ export default async function handler(
 
       // Validate required fields
       if (
-        !customerId ||
         !shippingAddress ||
         totalPrice === undefined ||
         totalPrice === null ||
         !products ||
         !Array.isArray(products) ||
-        products.length === 0
+        products.length === 0 ||
+        !customerEmail ||
+        !customerName
       ) {
         console.error("❌ Missing required fields:", {
           customerId: !!customerId,
+          customerName: !!customerName,
+          customerEmail: !!customerEmail,
           shippingAddress: !!shippingAddress,
           totalPrice: totalPrice,
           products: products,
@@ -66,7 +76,7 @@ export default async function handler(
           success: false,
           error: {
             message:
-              "Missing required fields. Products array must not be empty.",
+              "Missing required fields. Email, name, and products are required.",
           },
         });
       }
@@ -76,33 +86,43 @@ export default async function handler(
         typeof totalPrice === "string" ? parseFloat(totalPrice) : totalPrice;
 
       // Create order with order items
-      const newOrder: OrderWithRelations = (await prisma.order.create({
-        data: {
-          customerId,
-          shippingAddress,
-          paymentType: paymentType || "CASH_ON_DELIVERY",
-          deliveryType: deliveryType || "STORE_PICKUP",
-          totalPrice: totalPriceNumber,
-          currency: currency || "USD",
-          deliveryDate: deliveryDate
-            ? new Date(deliveryDate)
-            : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          sendEmail: shouldSendEmail || false,
-          orderItems: {
-            create: await Promise.all(
-              products.map(async (item: { id: number; quantity: number }) => {
-                const product = await prisma.product.findUnique({
-                  where: { id: item.id },
-                });
-                return {
-                  productId: item.id,
-                  quantity: item.quantity,
-                  price: product?.price || 0,
-                };
-              })
-            ),
-          },
+      const orderData: any = {
+        shippingAddress,
+        paymentType: paymentType || "CASH_ON_DELIVERY",
+        deliveryType: deliveryType || "STORE_PICKUP",
+        totalPrice: totalPriceNumber,
+        currency: currency || "USD",
+        status: status || "pending", // Allow custom status (e.g., pending_payment for Paystack)
+        deliveryDate: deliveryDate
+          ? new Date(deliveryDate)
+          : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        sendEmail: shouldSendEmail || false,
+        customerName: customerName,
+        customerEmail: customerEmail,
+        customerPhone: customerPhone || null,
+        orderItems: {
+          create: await Promise.all(
+            products.map(async (item: { id: number; quantity: number }) => {
+              const product = await prisma.product.findUnique({
+                where: { id: item.id },
+              });
+              return {
+                productId: item.id,
+                quantity: item.quantity,
+                price: product?.price || 0,
+              };
+            })
+          ),
         },
+      };
+
+      // Only add customerId if it exists (logged in user)
+      if (customerId) {
+        orderData.customerId = customerId;
+      }
+
+      const newOrder: OrderWithRelations = (await prisma.order.create({
+        data: orderData,
         include: {
           orderItems: {
             include: {
@@ -113,10 +133,14 @@ export default async function handler(
         },
       })) as OrderWithRelations;
 
+      // Determine customer details (from user or from request)
+      const customerFullname = newOrder.customer?.fullname || customerName;
+      const customerEmailAddress = newOrder.customer?.email || customerEmail;
+
       // Send order confirmation email to customer (non-blocking)
-      if (newOrder.customer.email) {
+      if (customerEmailAddress && shouldSendEmail) {
         const customerEmailTemplate = emailTemplates.orderConfirmation(
-          newOrder.customer.fullname,
+          customerFullname,
           newOrder.orderNumber,
           newOrder.totalPrice,
           newOrder.orderItems,
@@ -124,7 +148,7 @@ export default async function handler(
           currency || "USD"
         );
         sendEmail(
-          newOrder.customer.email,
+          customerEmailAddress,
           customerEmailTemplate.subject,
           customerEmailTemplate.html
         )
@@ -132,7 +156,7 @@ export default async function handler(
             if (result.success) {
               console.log(
                 "✅ Order confirmation sent to:",
-                newOrder.customer.email
+                customerEmailAddress
               );
             } else {
               console.error(
@@ -150,8 +174,8 @@ export default async function handler(
       const adminEmail = process.env.ADMIN_EMAIL;
       if (adminEmail) {
         const adminEmailTemplate = emailTemplates.newOrderAdminNotification(
-          newOrder.customer.fullname,
-          newOrder.customer.email,
+          customerFullname,
+          customerEmailAddress,
           newOrder.orderNumber,
           newOrder.totalPrice,
           newOrder.orderItems,
