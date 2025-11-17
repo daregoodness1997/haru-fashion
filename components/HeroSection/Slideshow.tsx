@@ -12,8 +12,8 @@ const sliders = [
   {
     id: 2,
     image: "/bg-img/image1.png",
-    imageTablet: "/bg-img/image1.jpg",
-    imageMobile: "/bg-img/image1.jpg",
+    imageTablet: "/bg-img/image-1-mobile.png",
+    imageMobile: "/bg-img/image-1-mobile.png",
     subtitle: "50% off",
     titleUp: "New Cocktail",
     titleDown: "Dresses",
@@ -22,8 +22,8 @@ const sliders = [
   {
     id: 1,
     image: "/bg-img/image2.png",
-    imageTablet: "/bg-img/image2.jpg",
-    imageMobile: "/bg-img/image2.jpg",
+    imageTablet: "/bg-img/image-2-mobile.png",
+    imageMobile: "/bg-img/image-2-mobile.png",
     subtitle: "Spring Revolution",
     titleUp: "Night Summer",
     titleDown: "Dresses",
@@ -32,8 +32,8 @@ const sliders = [
   {
     id: 3,
     image: "/bg-img/image3.png",
-    imageTablet: "/bg-img/image3.jpg",
-    imageMobile: "/bg-img/image3.jpg",
+    imageTablet: "/bg-img/image-3-mobile.png",
+    imageMobile: "/bg-img/image-3-mobile.png",
     subtitle: "Spring promo",
     titleUp: "The Weekend",
     titleDown: "Promotions",
