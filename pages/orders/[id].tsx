@@ -100,7 +100,9 @@ const OrderDetail: React.FC<Props> = ({ order }) => {
 
   return (
     <div>
-      <Header title={`Order #${order.orderNumber} - Shunapee Fashion House Fashion`} />
+      <Header
+        title={`Order #${order.orderNumber} - Shunapee Fashion House Fashion`}
+      />
 
       <main id="main-content">
         {/* Breadcrumb Section */}
@@ -328,16 +330,16 @@ export const getServerSideProps: GetServerSideProps = async ({
       // Map category from product to match Order type and serialize dates
       order = {
         ...fetchedOrder,
-        orderDate: fetchedOrder.orderDate.toISOString(),
-        deliveryDate: fetchedOrder.deliveryDate.toISOString(),
-        createdAt: fetchedOrder.createdAt.toISOString(),
-        updatedAt: fetchedOrder.updatedAt.toISOString(),
+        orderDate: fetchedOrder?.orderDate.toISOString(),
+        deliveryDate: fetchedOrder?.deliveryDate.toISOString(),
+        createdAt: fetchedOrder?.createdAt.toISOString(),
+        updatedAt: fetchedOrder?.updatedAt.toISOString(),
         customer: {
-          ...fetchedOrder.customer,
-          createdAt: fetchedOrder.customer.createdAt.toISOString(),
-          updatedAt: fetchedOrder.customer.updatedAt.toISOString(),
+          ...fetchedOrder?.customer,
+          createdAt: fetchedOrder?.customer?.createdAt.toISOString(),
+          updatedAt: fetchedOrder?.customer?.updatedAt.toISOString(),
         },
-        orderItems: fetchedOrder.orderItems.map((item) => ({
+        orderItems: fetchedOrder?.orderItems.map((item) => ({
           ...item,
           product: {
             ...item.product,
