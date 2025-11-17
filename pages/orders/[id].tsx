@@ -336,8 +336,8 @@ export const getServerSideProps: GetServerSideProps = async ({
         updatedAt: fetchedOrder?.updatedAt.toISOString(),
         customer: {
           ...fetchedOrder?.customer,
-          createdAt: fetchedOrder?.customer.createdAt.toISOString(),
-          updatedAt: fetchedOrder?.customer.updatedAt.toISOString(),
+          createdAt: fetchedOrder?.customer?.createdAt.toISOString(),
+          updatedAt: fetchedOrder?.customer?.updatedAt.toISOString(),
         },
         orderItems: fetchedOrder?.orderItems.map((item) => ({
           ...item,
