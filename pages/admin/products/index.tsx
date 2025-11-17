@@ -9,12 +9,14 @@ import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import Price from "../../../components/Price/Price";
 import { useAuth } from "../../../context/AuthContext";
+import { useCurrency } from "../../../context/CurrencyContext";
 import Button from "../../../components/Buttons/Button";
 
 export default function AdminProducts() {
   const t = useTranslations("Admin");
   const router = useRouter();
   const auth = useAuth();
+  const { exchangeRate } = useCurrency();
 
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,7 @@ export default function AdminProducts() {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    priceNGN: "", // NGN display field
     category: "men",
     image1: "",
     image2: "",
@@ -125,6 +128,7 @@ export default function AdminProducts() {
       setFormData({
         name: "",
         price: "",
+        priceNGN: "",
         category: "men",
         image1: "",
         image2: "",
@@ -151,9 +155,12 @@ export default function AdminProducts() {
 
   const handleEdit = (product: any) => {
     setEditingProduct(product);
+    const priceUSD = parseFloat(product.price.toString());
+    const priceNGN = (priceUSD * exchangeRate).toFixed(2);
     setFormData({
       name: product.name,
       price: product.price.toString(),
+      priceNGN: priceNGN,
       category: product.category,
       image1: product.image1,
       image2: product.image2,
@@ -191,6 +198,7 @@ export default function AdminProducts() {
     setFormData({
       name: "",
       price: "",
+      priceNGN: "",
       category: "men",
       image1: "",
       image2: "",
@@ -202,6 +210,26 @@ export default function AdminProducts() {
     setImage2Preview("");
     setShowForm(false);
     setEditingProduct(null);
+  };
+
+  const handlePriceUSDChange = (value: string) => {
+    const priceUSD = parseFloat(value) || 0;
+    const priceNGN = (priceUSD * exchangeRate).toFixed(2);
+    setFormData({
+      ...formData,
+      price: value,
+      priceNGN: priceNGN,
+    });
+  };
+
+  const handlePriceNGNChange = (value: string) => {
+    const priceNGN = parseFloat(value) || 0;
+    const priceUSD = (priceNGN / exchangeRate).toFixed(2);
+    setFormData({
+      ...formData,
+      price: priceUSD,
+      priceNGN: value,
+    });
   };
 
   const handleImage1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -306,34 +334,77 @@ export default function AdminProducts() {
                     />
                   </div>
                   <div>
-                    <label className="block mb-2">{t("price")}</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={formData.price}
+                    <label className="block mb-2">{t("category")}</label>
+                    <select
+                      value={formData.category}
                       onChange={(e) =>
-                        setFormData({ ...formData, price: e.target.value })
+                        setFormData({ ...formData, category: e.target.value })
                       }
-                      required
                       className="w-full border border-gray300 px-4 py-2"
-                    />
+                    >
+                      <option value="men">{t("men")}</option>
+                      <option value="women">{t("women")}</option>
+                      <option value="bags">{t("bags")}</option>
+                      <option value="material">{t("material")}</option>
+                    </select>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block mb-2">{t("category")}</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) =>
-                      setFormData({ ...formData, category: e.target.value })
-                    }
-                    className="w-full border border-gray300 px-4 py-2"
-                  >
-                    <option value="men">{t("men")}</option>
-                    <option value="women">{t("women")}</option>
-                    <option value="bags">{t("bags")}</option>
-                    <option value="material">{t("material")}</option>
-                  </select>
+                {/* Dual Price Inputs */}
+                <div className="border-2 border-blue-200 bg-blue-50 rounded-lg p-4">
+                  <h3 className="font-semibold mb-3 text-blue-900">
+                    💰 Product Pricing
+                  </h3>
+                  <p className="text-sm text-blue-700 mb-4">
+                    Prices are stored in USD. Enter either USD or NGN - the
+                    other will auto-calculate at ₦
+                    {exchangeRate.toLocaleString()}/USD
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block mb-2 font-medium">
+                        💵 Price (USD) <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/4 -translate-y-1/3 text-gray400">
+                          $
+                        </span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={formData.price}
+                          onChange={(e) => handlePriceUSDChange(e.target.value)}
+                          required
+                          placeholder="0.00"
+                          className="w-full border border-gray300 px-4 py-2 pl-8"
+                        />
+                      </div>
+                      <p className="text-xs text-gray400 mt-1">
+                        Stored in database
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block mb-2 font-medium">
+                        💳 Price (NGN)
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/4 -translate-y-1/3 text-gray400">
+                          ₦
+                        </span>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={formData.priceNGN}
+                          onChange={(e) => handlePriceNGNChange(e.target.value)}
+                          placeholder="0.00"
+                          className="w-full border border-gray300 px-4 py-2 pl-8"
+                        />
+                      </div>
+                      <p className="text-xs text-gray400 mt-1">
+                        Auto-converted for display
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -448,13 +519,13 @@ export default function AdminProducts() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="flex-1 px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+                      className="flex-1 px-4 py-2 bg-blue-500 text-gray500 hover:bg-blue-600 transition-colors"
                     >
                       {t("edit")}
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="flex-1 px-4 py-2 bg-red-500 text-white hover:bg-red-600 transition-colors"
+                      className="flex-1 px-4 py-2 bg-red-500 text-gray500 hover:bg-red-600 transition-colors"
                     >
                       {t("delete")}
                     </button>

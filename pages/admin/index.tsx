@@ -110,107 +110,208 @@ export default function AdminDashboard() {
         </div>
 
         {/* Main Content */}
-        <div className="app-x-padding app-max-width my-8">
-          <h1 className="text-4xl mb-8">{t("admin_dashboard")}</h1>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="border border-gray200 p-6">
-              <h3 className="text-gray400 text-sm uppercase mb-2">
-                {t("total_orders")}
-              </h3>
-              <p className="text-4xl font-semibold">{stats.totalOrders}</p>
+        <div className="app-x-padding app-max-width my-12">
+          <div className="max-w-7xl mx-auto">
+            {/* Dashboard Header */}
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold mb-2">🛡️ Admin Dashboard</h1>
+              <p className="text-gray400">
+                Manage your store, orders, and products
+              </p>
             </div>
-            <div className="border border-gray200 p-6">
-              <h3 className="text-gray400 text-sm uppercase mb-2">
-                {t("pending_orders")}
-              </h3>
-              <p className="text-4xl font-semibold">{stats.pendingOrders}</p>
-            </div>
-            <div className="border border-gray200 p-6">
-              <h3 className="text-gray400 text-sm uppercase mb-2">
-                {t("total_products")}
-              </h3>
-              <p className="text-4xl font-semibold">{stats.totalProducts}</p>
-            </div>
-          </div>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <Link
-              href="/admin/orders"
-              className="border-2 border-gray500 p-6 hover:bg-gray500 hover:text-white transition-colors text-center"
-            >
-              <h3 className="text-2xl font-semibold">{t("manage_orders")}</h3>
-              <p className="mt-2">{t("view_and_update_orders")}</p>
-            </Link>
-            <Link
-              href="/admin/products"
-              className="border-2 border-gray500 p-6 hover:bg-gray500 hover:text-white transition-colors text-center"
-            >
-              <h3 className="text-2xl font-semibold">{t("manage_products")}</h3>
-              <p className="mt-2">{t("add_edit_delete_products")}</p>
-            </Link>
-          </div>
-
-          {/* Recent Orders */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">
-              {t("recent_orders")}
-            </h2>
-            {stats.recentOrders.length === 0 ? (
-              <p className="text-gray400">{t("no_orders")}</p>
-            ) : (
-              <div className="border border-gray200">
-                <table className="w-full">
-                  <thead className="bg-gray100">
-                    <tr>
-                      <th className="text-left p-4">{t("order_number")}</th>
-                      <th className="text-left p-4">{t("customer")}</th>
-                      <th className="text-left p-4">{t("total")}</th>
-                      <th className="text-left p-4">{t("status")}</th>
-                      <th className="text-left p-4">{t("date")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.recentOrders.map((order: any) => (
-                      <tr key={order.id} className="border-t border-gray200">
-                        <td className="p-4">
-                          <Link
-                            href={`/admin/orders/${order.id}`}
-                            className="text-blue-600 hover:underline"
-                          >
-                            #{order.orderNumber}
-                          </Link>
-                        </td>
-                        <td className="p-4">{order.customer.fullname}</td>
-                        <td className="p-4">
-                          <Price amount={order.totalPrice} />
-                        </td>
-                        <td className="p-4">
-                          <span
-                            className={`px-3 py-1 text-sm ${
-                              order.status === "delivered"
-                                ? "bg-green-100 text-green-800"
-                                : order.status === "shipped"
-                                ? "bg-blue-100 text-blue-800"
-                                : order.status === "processing"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-gray100 text-gray500"
-                            }`}
-                          >
-                            {t(order.status)}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          {new Date(order.orderDate).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg shadow-sm p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-blue-600 text-sm font-semibold uppercase">
+                    {t("total_orders")}
+                  </h3>
+                  <div className="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center">
+                    <span className="text-xl">📦</span>
+                  </div>
+                </div>
+                <p className="text-4xl font-bold text-blue-900">
+                  {stats.totalOrders}
+                </p>
+                <p className="text-sm text-blue-600 mt-2">All time orders</p>
               </div>
-            )}
+              <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg shadow-sm p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-yellow-600 text-sm font-semibold uppercase">
+                    {t("pending_orders")}
+                  </h3>
+                  <div className="w-10 h-10 bg-yellow-200 rounded-full flex items-center justify-center">
+                    <span className="text-xl">⏳</span>
+                  </div>
+                </div>
+                <p className="text-4xl font-bold text-yellow-900">
+                  {stats.pendingOrders}
+                </p>
+                <p className="text-sm text-yellow-600 mt-2">Needs attention</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg shadow-sm p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-green-600 text-sm font-semibold uppercase">
+                    {t("total_products")}
+                  </h3>
+                  <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center">
+                    <span className="text-xl">🛍️</span>
+                  </div>
+                </div>
+                <p className="text-4xl font-bold text-green-900">
+                  {stats.totalProducts}
+                </p>
+                <p className="text-sm text-green-600 mt-2">In inventory</p>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">⚡ Quick Actions</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Link
+                  href="/admin/orders"
+                  className="block bg-white border-2 border-gray200 hover:border-gray500 rounded-lg p-6 transition-all hover:shadow-lg group"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                      <span className="text-2xl">📋</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    {t("manage_orders")}
+                  </h3>
+                  <p className="text-sm text-gray400">
+                    {t("view_and_update_orders")}
+                  </p>
+                </Link>
+
+                <Link
+                  href="/admin/products"
+                  className="block bg-white border-2 border-gray200 hover:border-gray500 rounded-lg p-6 transition-all hover:shadow-lg group"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center group-hover:bg-pink-200 transition-colors">
+                      <span className="text-2xl">🏷️</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    {t("manage_products")}
+                  </h3>
+                  <p className="text-sm text-gray400">
+                    {t("add_edit_delete_products")}
+                  </p>
+                </Link>
+
+                <Link
+                  href="/profile"
+                  className="block bg-white border-2 border-gray200 hover:border-gray500 rounded-lg p-6 transition-all hover:shadow-lg group"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                      <span className="text-2xl">👤</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">My Profile</h3>
+                  <p className="text-sm text-gray400">
+                    View personal dashboard
+                  </p>
+                </Link>
+              </div>
+            </div>
+
+            {/* Recent Orders */}
+            <div className="bg-white border border-gray200 rounded-lg shadow-sm">
+              <div className="p-6 border-b border-gray200">
+                <h2 className="text-2xl font-bold">📊 {t("recent_orders")}</h2>
+              </div>
+              {stats.recentOrders.length === 0 ? (
+                <div className="p-8 text-center">
+                  <p className="text-gray400 mb-3">{t("no_orders")}</p>
+                  <Link href="/" className="text-blue-600 hover:underline">
+                    Browse products →
+                  </Link>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="text-left p-4 font-semibold">
+                          {t("order_number")}
+                        </th>
+                        <th className="text-left p-4 font-semibold">
+                          {t("customer")}
+                        </th>
+                        <th className="text-left p-4 font-semibold">
+                          {t("total")}
+                        </th>
+                        <th className="text-left p-4 font-semibold">
+                          {t("status")}
+                        </th>
+                        <th className="text-left p-4 font-semibold">
+                          {t("date")}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.recentOrders.map((order: any) => (
+                        <tr
+                          key={order.id}
+                          className="border-t border-gray200 hover:bg-gray-50 transition-colors"
+                        >
+                          <td className="p-4">
+                            <Link
+                              href={`/admin/orders/${order.id}`}
+                              className="text-blue-600 hover:underline font-medium"
+                            >
+                              #{order.orderNumber}
+                            </Link>
+                          </td>
+                          <td className="p-4">
+                            {order.customer?.fullname ||
+                              order.customerName ||
+                              "Guest"}
+                          </td>
+                          <td className="p-4 font-semibold">
+                            <Price amount={order.totalPrice} />
+                          </td>
+                          <td className="p-4">
+                            <span
+                              className={`px-3 py-1 text-sm rounded-full font-medium ${
+                                order.status === "delivered"
+                                  ? "bg-green-100 text-green-800"
+                                  : order.status === "shipped"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : order.status === "processing"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : order.status === "paid"
+                                  ? "bg-purple-100 text-purple-800"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}
+                            >
+                              {order.status}
+                            </span>
+                          </td>
+                          <td className="p-4 text-gray400">
+                            {new Date(order.orderDate).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              <div className="p-4 border-t border-gray200 text-center">
+                <Link
+                  href="/admin/orders"
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  View all orders →
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </main>

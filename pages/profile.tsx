@@ -1,13 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { GetStaticProps } from "next";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import axios from "axios";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
-import Input from "../components/Input/Input";
-import Button from "../components/Buttons/Button";
 import { useAuth } from "../context/AuthContext";
 
 const Profile = () => {
@@ -16,114 +13,12 @@ const Profile = () => {
   const auth = useAuth();
   const router = useRouter();
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-
-  // Form fields
-  const [fullname, setFullname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [shippingAddress, setShippingAddress] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
   useEffect(() => {
     if (!auth.user) {
       router.push("/");
       return;
     }
-
-    // Initialize form with user data
-    setFullname(auth.user.fullname || "");
-    setEmail(auth.user.email || "");
-    setPhone(auth.user.phone || "");
-    setShippingAddress(auth.user.shippingAddress || "");
   }, [auth.user, router]);
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg("");
-    setSuccessMsg("");
-
-    // Validate password fields if changing password
-    if (newPassword || confirmPassword || currentPassword) {
-      if (!currentPassword) {
-        setErrorMsg("current_password_required");
-        return;
-      }
-      if (newPassword !== confirmPassword) {
-        setErrorMsg("passwords_not_match");
-        return;
-      }
-      if (newPassword.length < 6) {
-        setErrorMsg("password_too_short");
-        return;
-      }
-    }
-
-    setIsSaving(true);
-
-    try {
-      const updateData: any = {
-        fullname,
-        phone,
-        shippingAddress,
-      };
-
-      // Only include password if user wants to change it
-      if (currentPassword && newPassword) {
-        updateData.currentPassword = currentPassword;
-        updateData.newPassword = newPassword;
-      }
-
-      const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users/${auth.user?.id}`,
-        updateData
-      );
-
-      if (res.data.success) {
-        // Update auth context with new user data
-        if (auth.updateUser) {
-          auth.updateUser({
-            ...auth.user!,
-            fullname,
-            phone,
-            shippingAddress,
-          });
-        }
-
-        setSuccessMsg("profile_updated");
-        setIsEditing(false);
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        setErrorMsg(res.data.error?.message || "update_failed");
-      }
-    } catch (error: any) {
-      console.error("Error updating profile:", error);
-      setErrorMsg(error.response?.data?.error?.message || "update_failed");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleCancel = () => {
-    // Reset form to original values
-    setFullname(auth.user?.fullname || "");
-    setEmail(auth.user?.email || "");
-    setPhone(auth.user?.phone || "");
-    setShippingAddress(auth.user?.shippingAddress || "");
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setIsEditing(false);
-    setErrorMsg("");
-    setSuccessMsg("");
-  };
 
   const handleLogout = () => {
     if (auth.logout) {
@@ -146,7 +41,7 @@ const Profile = () => {
           <div className="app-x-padding app-max-width w-full">
             <div className="breadcrumb">
               <Link href="/" className="text-gray400">
-                {tNav("home")}
+                {t("home")}
               </Link>{" "}
               / <span>{t("my_profile")}</span>
             </div>
@@ -155,283 +50,220 @@ const Profile = () => {
 
         {/* Main Content Section */}
         <div className="app-x-padding app-max-width my-12">
-          <div className="max-w-5xl mx-auto">
-            {/* Header with Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-              <div>
-                <h1 className="text-4xl font-semibold mb-2">
-                  {t("my_profile")}
-                </h1>
-                <p className="text-gray400">{t("manage_your_info")}</p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  href="/orders"
-                  className="px-5 py-2.5 bg-gray500 text-white hover:bg-gray600 transition-colors rounded"
-                >
-                  📦 {tNav("my_orders")}
-                </Link>
-                {auth.user?.isAdmin && (
-                  <Link
-                    href="/admin"
-                    className="px-5 py-2.5 bg-green-600 text-white hover:bg-green-700 transition-colors rounded"
-                  >
-                    🛡️ {tNav("admin_dashboard")}
-                  </Link>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="px-5 py-2.5 bg-red-600 text-white hover:bg-red-700 transition-colors rounded"
-                >
-                  🚪 {t("logout")}
-                </button>
-              </div>
+          <div className="max-w-6xl mx-auto">
+            {/* Dashboard Header */}
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold mb-2">
+                Welcome back, {auth.user?.fullname}! 👋
+              </h1>
+              <p className="text-gray400">{t("manage_your_info")}</p>
             </div>
 
-            {/* Success Message */}
-            {successMsg && (
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg flex items-start">
-                <span className="text-xl mr-3">✓</span>
-                <span>{t(successMsg)}</span>
-              </div>
-            )}
-
-            {/* Error Message */}
-            {errorMsg && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg flex items-start">
-                <span className="text-xl mr-3">⚠</span>
-                <span>{t(errorMsg)}</span>
-              </div>
-            )}
-
-            {/* Profile Form */}
-            <form
-              onSubmit={handleSave}
-              className="bg-white border border-gray200 rounded-lg shadow-sm"
-            >
-              {/* Personal Information Section */}
-              <div className="p-8 border-b border-gray200">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                    <span className="text-2xl">👤</span>
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold">
-                      {t("personal_info")}
-                    </h2>
-                    <p className="text-sm text-gray400">
-                      {t("personal_info_desc")}
-                    </p>
+            {/* Quick Actions Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Link
+                href="/profile/edit"
+                className="bg-white border-2 border-gray200 hover:border-gray500 rounded-lg p-6 transition-all hover:shadow-lg group"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <span className="text-2xl">✏️</span>
                   </div>
                 </div>
+                <h3 className="text-lg font-semibold mb-1">
+                  {t("edit_profile")}
+                </h3>
+                <p className="text-sm text-gray400">
+                  Update your personal info
+                </p>
+              </Link>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray700 mb-2">
-                      {t("fullname")} <span className="text-red-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="fullname"
-                      value={fullname}
-                      onChange={(e) => setFullname(e.target.value)}
-                      disabled={!isEditing}
-                      required
-                      className={`w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors ${
-                        !isEditing ? "bg-gray-50 cursor-not-allowed" : ""
-                      }`}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray700 mb-2">
-                      {t("email")}
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={email}
-                      disabled={true}
-                      className="w-full px-4 py-3 border-2 border-gray300 rounded bg-gray-50 cursor-not-allowed"
-                    />
-                    <p className="text-xs text-gray400 mt-1">
-                      🔒 {t("email_cannot_change")}
-                    </p>
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray700 mb-2">
-                      {t("phone")}
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      disabled={!isEditing}
-                      className={`w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors ${
-                        !isEditing ? "bg-gray-50 cursor-not-allowed" : ""
-                      }`}
-                    />
+              <Link
+                href="/orders"
+                className="bg-white border-2 border-gray200 hover:border-gray500 rounded-lg p-6 transition-all hover:shadow-lg group"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                    <span className="text-2xl">📦</span>
                   </div>
                 </div>
-              </div>
+                <h3 className="text-lg font-semibold mb-1">
+                  {tNav("my_orders")}
+                </h3>
+                <p className="text-sm text-gray400">Track your orders</p>
+              </Link>
 
-              {/* Shipping Address Section */}
-              <div className="p-8 border-b border-gray200">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                    <span className="text-2xl">📍</span>
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold">
-                      {t("shipping_address")}
-                    </h2>
-                    <p className="text-sm text-gray400">
-                      {t("shipping_address_desc")}
-                    </p>
+              <Link
+                href="/wishlist"
+                className="bg-white border-2 border-gray200 hover:border-gray500 rounded-lg p-6 transition-all hover:shadow-lg group"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center group-hover:bg-pink-200 transition-colors">
+                    <span className="text-2xl">❤️</span>
                   </div>
                 </div>
+                <h3 className="text-lg font-semibold mb-1">Wishlist</h3>
+                <p className="text-sm text-gray400">View saved items</p>
+              </Link>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray700 mb-2">
-                    {t("address")}
-                  </label>
-                  <textarea
-                    name="shippingAddress"
-                    value={shippingAddress}
-                    onChange={(e) => setShippingAddress(e.target.value)}
-                    disabled={!isEditing}
-                    rows={3}
-                    className={`w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors ${
-                      !isEditing ? "bg-gray-50 cursor-not-allowed" : ""
-                    }`}
-                    placeholder={isEditing ? t("address_placeholder") : ""}
-                  />
+              <button
+                onClick={handleLogout}
+                className="bg-white border-2 border-gray200 hover:border-red-500 rounded-lg p-6 transition-all hover:shadow-lg group text-left"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center group-hover:bg-red-200 transition-colors">
+                    <span className="text-2xl">🚪</span>
+                  </div>
                 </div>
-              </div>
+                <h3 className="text-lg font-semibold mb-1">{t("logout")}</h3>
+                <p className="text-sm text-gray400">Sign out of your account</p>
+              </button>
+            </div>
 
-              {/* Password Change Section */}
-              {isEditing && (
-                <div className="p-8 border-b border-gray200 bg-gray-50">
-                  <div className="flex items-center mb-6">
-                    <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
-                      <span className="text-2xl">🔑</span>
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-semibold">
-                        {t("change_password")}
+            {/* Profile Information Cards */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Personal Info Card */}
+              <div className="bg-white border border-gray200 rounded-lg shadow-sm">
+                <div className="p-6 border-b border-gray200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-xl">👤</span>
+                      </div>
+                      <h2 className="text-xl font-semibold">
+                        {t("personal_info")}
                       </h2>
-                      <p className="text-sm text-gray400">
-                        {t("password_change_note")}
-                      </p>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray700 mb-2">
-                        {t("current_password")}
-                      </label>
-                      <input
-                        type="password"
-                        name="currentPassword"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        placeholder={t("optional")}
-                        className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray700 mb-2">
-                        {t("new_password")}
-                      </label>
-                      <input
-                        type="password"
-                        name="newPassword"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder={t("min_6_chars")}
-                        className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray700 mb-2">
-                        {t("confirm_password")}
-                      </label>
-                      <input
-                        type="password"
-                        name="confirmPassword"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder={t("retype_password")}
-                        className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
-                      />
-                    </div>
+                    <Link
+                      href="/profile/edit"
+                      className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      Edit →
+                    </Link>
                   </div>
                 </div>
-              )}
+                <div className="p-6 space-y-4">
+                  <div>
+                    <p className="text-sm text-gray400 mb-1">Full Name</p>
+                    <p className="text-base font-medium">
+                      {auth.user?.fullname || "Not provided"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray400 mb-1">Email</p>
+                    <p className="text-base font-medium">{auth.user?.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray400 mb-1">Phone</p>
+                    <p className="text-base font-medium">
+                      {auth.user?.phone || "Not provided"}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-              {/* Action Buttons */}
-              <div className="p-8 bg-gray-50 rounded-b-lg">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  {!isEditing ? (
-                    <Button
-                      type="button"
-                      value={`✏️ ${t("edit_profile")}`}
-                      onClick={() => setIsEditing(true)}
-                      extraClass="sm:w-auto"
-                    />
+              {/* Shipping Address Card */}
+              <div className="bg-white border border-gray200 rounded-lg shadow-sm">
+                <div className="p-6 border-b border-gray200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-xl">📍</span>
+                      </div>
+                      <h2 className="text-xl font-semibold">
+                        {t("shipping_address")}
+                      </h2>
+                    </div>
+                    <Link
+                      href="/profile/edit"
+                      className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      Edit →
+                    </Link>
+                  </div>
+                </div>
+                <div className="p-6">
+                  {auth.user?.shippingAddress ? (
+                    <p className="text-base">{auth.user.shippingAddress}</p>
                   ) : (
-                    <>
-                      <Button
-                        type="submit"
-                        value={
-                          isSaving ? t("saving") : `💾 ${t("save_changes")}`
-                        }
-                        disabled={isSaving}
-                        extraClass="sm:w-auto"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleCancel}
-                        className="px-8 py-3 border-2 border-gray300 text-gray600 hover:bg-gray100 transition-colors rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={isSaving}
+                    <div className="text-center py-4">
+                      <p className="text-gray400 mb-3">
+                        No shipping address added
+                      </p>
+                      <Link
+                        href="/profile/edit"
+                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                       >
-                        ✕ {t("cancel")}
-                      </button>
-                    </>
+                        Add address →
+                      </Link>
+                    </div>
                   )}
                 </div>
               </div>
-            </form>
+            </div>
 
-            {/* Account Info Card */}
-            <div className="mt-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
-              <h3 className="text-lg font-semibold mb-3 text-blue-900">
-                ℹ️ {t("account_info")}
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-gray500 font-medium">
-                    {t("member_since")}:
-                  </span>
-                  <span className="ml-2 text-gray700">
-                    {new Date().getFullYear()}
-                  </span>
+            {/* Account Status Card */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg shadow-sm p-6">
+              <div className="flex items-start">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mr-4 shadow-sm">
+                  <span className="text-2xl">ℹ️</span>
                 </div>
-                <div>
-                  <span className="text-gray500 font-medium">
-                    {t("account_status")}:
-                  </span>
-                  <span className="ml-2 text-green-600 font-medium">
-                    ✓ {auth.user?.isAdmin ? t("admin_account") : t("active")}
-                  </span>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold mb-3">
+                    {t("account_info")}
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-gray500 mb-1">
+                        Account Status
+                      </p>
+                      <p className="font-semibold text-green-600">
+                        ✓ {auth.user?.isAdmin ? "Admin" : "Active"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray500 mb-1">Member Since</p>
+                      <p className="font-semibold">
+                        {new Date().getFullYear()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray500 mb-1">Account Type</p>
+                      <p className="font-semibold">
+                        {auth.user?.isAdmin ? "Administrator" : "Customer"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Admin Quick Access */}
+            {auth.user?.isAdmin && (
+              <div className="mt-6 bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 rounded-lg shadow-sm p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mr-4 shadow-sm">
+                      <span className="text-2xl">🛡️</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-1">
+                        Admin Access
+                      </h3>
+                      <p className="text-sm text-gray500">
+                        Manage products, orders, and customers
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/admin"
+                    className="px-6 py-3 bg-green-600 text-gray500 hover:bg-green-700 transition-colors rounded-lg font-medium"
+                  >
+                    Go to Dashboard →
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>

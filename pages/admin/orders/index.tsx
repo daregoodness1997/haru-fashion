@@ -164,9 +164,15 @@ export default function AdminOrders() {
                           </Link>
                         </td>
                         <td className="p-4">
-                          <div>{order.customer.fullname}</div>
+                          <div>
+                            {order.customer?.fullname ||
+                              order.customerName ||
+                              "Guest"}
+                          </div>
                           <div className="text-sm text-gray400">
-                            {order.customer.email}
+                            {order.customer?.email ||
+                              order.customerEmail ||
+                              "N/A"}
                           </div>
                         </td>
                         <td className="p-4">{order.orderItems.length}</td>
