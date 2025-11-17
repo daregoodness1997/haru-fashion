@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 import { useAuth } from "../../context/AuthContext";
 import Button from "../Buttons/Button";
@@ -34,10 +35,15 @@ const Login: React.FC<Props> = ({
     console.log("Auth object:", auth);
     console.log("Auth.login function:", auth.login);
 
+    const loadingToast = toast.loading("Logging in...");
+
     const loginResponse = await auth.login!(email, password);
     console.log("Login response:", loginResponse);
 
     if (loginResponse.success) {
+      toast.success(t("login_successful") || "Login successful!", {
+        id: loadingToast,
+      });
       setSuccessMsg("login_successful");
 
       // Redirect admin users to admin dashboard
@@ -48,6 +54,12 @@ const Login: React.FC<Props> = ({
         }
       }, 500);
     } else {
+      toast.error(
+        t("incorrect_email_password") || "Incorrect email or password",
+        {
+          id: loadingToast,
+        }
+      );
       setErrorMsg("incorrect_email_password");
     }
   };

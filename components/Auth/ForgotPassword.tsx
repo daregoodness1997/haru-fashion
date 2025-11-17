@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { useTranslations } from "next-intl";
+import toast from "react-hot-toast";
 
 import { useAuth } from "../../context/AuthContext";
 import Button from "../Buttons/Button";
@@ -23,51 +24,35 @@ const ForgotPassword: React.FC<Props> = ({
 }) => {
   const auth = useAuth();
   const [email, setEmail] = useState("");
-  const [showToast, setShowToast] = useState(false);
   const t = useTranslations("LoginRegister");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const loadingToast = toast.loading("Sending reset link...");
+
     const forgotPasswordResponse = await auth.forgotPassword!(email);
     console.log(forgotPasswordResponse);
     if (forgotPasswordResponse.success) {
+      toast.success(
+        t("forgot_password_success") ||
+          "Password reset link sent to your email!",
+        { id: loadingToast, duration: 5000 }
+      );
       setSuccessMsg("forgot_password_success");
-      setShowToast(true);
 
-      // Close modal after showing toast for 2 seconds
+      // Close modal after 2 seconds
       setTimeout(() => {
-        setShowToast(false);
         onClose();
       }, 2000);
     } else {
-      // setErrorMsg("incorrect_email_password");
+      toast.error("Failed to send reset link. Please try again.", {
+        id: loadingToast,
+      });
     }
   };
 
   return (
     <>
-      {/* Toast Notification */}
-      {showToast && (
-        <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in">
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-            <span>{t("forgot_password_success")}</span>
-          </div>
-        </div>
-      )}
-
       <Dialog.Title
         as="h3"
         className="text-3xl text-center my-8 font-medium leading-10 text-gray-900"

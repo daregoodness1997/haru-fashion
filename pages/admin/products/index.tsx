@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer/Footer";
 import Price from "../../../components/Price/Price";
@@ -80,6 +81,10 @@ export default function AdminProducts() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const loadingToast = toast.loading(
+      editingProduct ? "Updating product..." : "Adding product..."
+    );
+
     try {
       setUploading(true);
 
@@ -111,7 +116,10 @@ export default function AdminProducts() {
             ...productData,
           }
         );
-        alert(t("product_updated_successfully"));
+        toast.success(
+          t("product_updated_successfully") || "Product updated successfully!",
+          { id: loadingToast }
+        );
       } else {
         // Create product
         await axios.post(
@@ -121,7 +129,10 @@ export default function AdminProducts() {
             ...productData,
           }
         );
-        alert(t("product_added_successfully"));
+        toast.success(
+          t("product_added_successfully") || "Product added successfully!",
+          { id: loadingToast }
+        );
       }
 
       // Reset form
@@ -144,9 +155,14 @@ export default function AdminProducts() {
     } catch (error: any) {
       console.error("Error saving product:", error);
       if (error.response?.status === 403) {
-        alert(t("admin_access_required"));
+        toast.error(t("admin_access_required") || "Admin access required", {
+          id: loadingToast,
+        });
       } else {
-        alert(t("operation_failed"));
+        toast.error(
+          t("operation_failed") || "Operation failed. Please try again.",
+          { id: loadingToast }
+        );
       }
     } finally {
       setUploading(false);
@@ -178,18 +194,28 @@ export default function AdminProducts() {
       return;
     }
 
+    const loadingToast = toast.loading("Deleting product...");
+
     try {
       await axios.delete(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/admin/products?userId=${auth.user?.id}&id=${productId}`
       );
-      alert(t("product_deleted_successfully"));
+      toast.success(
+        t("product_deleted_successfully") || "Product deleted successfully!",
+        { id: loadingToast }
+      );
       fetchProducts();
     } catch (error: any) {
       console.error("Error deleting product:", error);
       if (error.response?.status === 403) {
-        alert(t("admin_access_required"));
+        toast.error(t("admin_access_required") || "Admin access required", {
+          id: loadingToast,
+        });
       } else {
-        alert(t("operation_failed"));
+        toast.error(
+          t("operation_failed") || "Operation failed. Please try again.",
+          { id: loadingToast }
+        );
       }
     }
   };

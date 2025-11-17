@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
+import toast from "react-hot-toast";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Button from "../../components/Buttons/Button";
@@ -84,20 +85,28 @@ const EditProfile = () => {
     // Validate password fields if changing password
     if (newPassword || confirmPassword || currentPassword) {
       if (!currentPassword) {
+        toast.error(
+          t("current_password_required") || "Current password is required"
+        );
         setErrorMsg("current_password_required");
         return;
       }
       if (newPassword !== confirmPassword) {
+        toast.error(t("passwords_not_match") || "Passwords do not match");
         setErrorMsg("passwords_not_match");
         return;
       }
       if (newPassword.length < 6) {
+        toast.error(
+          t("password_too_short") || "Password must be at least 6 characters"
+        );
         setErrorMsg("password_too_short");
         return;
       }
     }
 
     setIsSaving(true);
+    const loadingToast = toast.loading("Updating your profile...");
 
     try {
       const updateData: any = {
@@ -139,6 +148,9 @@ const EditProfile = () => {
           });
         }
 
+        toast.success(t("profile_updated") || "Profile updated successfully!", {
+          id: loadingToast,
+        });
         setSuccessMsg("profile_updated");
         setCurrentPassword("");
         setNewPassword("");
@@ -149,10 +161,26 @@ const EditProfile = () => {
           router.push("/profile");
         }, 2000);
       } else {
+        toast.error(
+          res.data.error?.message ||
+            t("update_failed") ||
+            "Failed to update profile",
+          {
+            id: loadingToast,
+          }
+        );
         setErrorMsg(res.data.error?.message || "update_failed");
       }
     } catch (error: any) {
       console.error("Error updating profile:", error);
+      toast.error(
+        error.response?.data?.error?.message ||
+          t("update_failed") ||
+          "Failed to update profile",
+        {
+          id: loadingToast,
+        }
+      );
       setErrorMsg(error.response?.data?.error?.message || "update_failed");
     } finally {
       setIsSaving(false);

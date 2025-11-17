@@ -345,7 +345,19 @@
     "image_2": "Imagen 2",
     "current_image_kept": "La imagen actual se mantendrá si no se cambia",
     "upload_new_image": "Sube una nueva imagen (máx 5MB)",
-    "uploading": "Subiendo..."
+    "uploading": "Subiendo...",
+    "service_requests": "Solicitudes de Servicio",
+    "manage_service_requests": "Gestionar todas las solicitudes de servicio de clientes",
+    "all": "Todo",
+    "in_progress": "En Progreso",
+    "completed": "Completado",
+    "service_type": "Tipo de Servicio",
+    "customer_information": "Información del Cliente",
+    "reference_images": "Imágenes de Referencia",
+    "measurements": "Medidas",
+    "mark_in_progress": "Marcar En Progreso",
+    "mark_completed": "Marcar Completado",
+    "no_service_requests": "No se encontraron solicitudes de servicio"
   },
   "Services": {
     "additional_services": "Servicios Adicionales",

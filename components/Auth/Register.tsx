@@ -1,6 +1,7 @@
 import React, { FormEvent, useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { useTranslations } from "next-intl";
+import toast from "react-hot-toast";
 
 import Button from "../Buttons/Button";
 import Input from "../Input/Input";
@@ -29,6 +30,8 @@ const Register: React.FC<Props> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const loadingToast = toast.loading("Creating your account...");
+
     const regResponse = await auth.register!(
       email,
       name,
@@ -37,11 +40,23 @@ const Register: React.FC<Props> = ({
       phone
     );
     if (regResponse.success) {
+      toast.success(t("register_successful") || "Registration successful!", {
+        id: loadingToast,
+      });
       setSuccessMsg("register_successful");
     } else {
       if (regResponse.message === "alreadyExists") {
+        toast.error(t("email_already_exists") || "Email already exists", {
+          id: loadingToast,
+        });
         setErrorMsg("email_already_exists");
       } else {
+        toast.error(
+          t("error_occurs") || "An error occurred. Please try again.",
+          {
+            id: loadingToast,
+          }
+        );
         setErrorMsg("error_occurs");
       }
     }

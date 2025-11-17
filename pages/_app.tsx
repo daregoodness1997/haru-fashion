@@ -2,6 +2,7 @@ import { NextComponentType, NextPageContext } from "next";
 import Router from "next/router";
 import NProgress from "nprogress";
 import { NextIntlClientProvider } from "next-intl";
+import { Toaster } from "react-hot-toast";
 
 import { ProvideCart } from "../context/cart/CartProvider";
 import { ProvideWishlist } from "../context/wishlist/WishlistProvider";
@@ -38,6 +39,31 @@ const MyApp = ({ Component, pageProps }: AppCustomProps) => {
         <CurrencyProvider>
           <ProvideWishlist>
             <ProvideCart>
+              <Toaster
+                position="top-center"
+                reverseOrder={false}
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: "#363636",
+                    color: "#fff",
+                  },
+                  success: {
+                    duration: 3000,
+                    iconTheme: {
+                      primary: "#10b981",
+                      secondary: "#fff",
+                    },
+                  },
+                  error: {
+                    duration: 4000,
+                    iconTheme: {
+                      primary: "#ef4444",
+                      secondary: "#fff",
+                    },
+                  },
+                }}
+              />
               <Component {...pageProps} />
             </ProvideCart>
           </ProvideWishlist>
