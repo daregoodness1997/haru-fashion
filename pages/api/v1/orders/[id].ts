@@ -106,42 +106,108 @@ export default async function handler(
       );
 
       // Send email notification if status changed
-      // Use the customer's email if available
-      const customerEmail = currentOrder.customer?.email;
-      const customerName = currentOrder.customer?.fullname;
+      // For guest orders, use customerEmail; for user orders, use customer.email
+      const customerEmail =
+        currentOrder.customer?.email || currentOrder.customerEmail;
+      const customerName =
+        currentOrder.customer?.fullname || currentOrder.customerName;
 
       if (status && status !== currentOrder.status && customerEmail) {
         console.log("📧 Status changed, sending email notification...");
-        const statusEmailTemplate = emailTemplates.orderStatusUpdate(
-          customerName || "Customer",
-          currentOrder.orderNumber,
-          status,
-          trackingNumber,
-          currentOrder.shippingAddress
-        );
 
-        sendEmail(
-          customerEmail,
-          statusEmailTemplate.subject,
-          statusEmailTemplate.html
-        )
-          .then((result: any) => {
-            if (result.success) {
-              console.log(
-                `✅ Order status update email sent to: ${
-                  currentOrder?.customer?.email || ""
-                }`
-              );
-            } else {
-              console.error(
-                "❌ Failed to send status update email:",
-                result.error
-              );
-            }
-          })
-          .catch((err: any) => {
-            console.error("❌ Status update email error:", err);
-          });
+        // If order was just paid (from pending_payment to paid), send order confirmation
+        if (currentOrder.status === "pending_payment" && status === "paid") {
+          console.log(
+            "💳 Payment completed, sending order confirmation email..."
+          );
+          const confirmationTemplate = emailTemplates.orderConfirmation(
+            customerName || "Customer",
+            currentOrder.orderNumber,
+            currentOrder.totalPrice,
+            currentOrder.orderItems,
+            currentOrder.shippingAddress,
+            currentOrder.currency || "USD"
+          );
+
+          sendEmail(
+            customerEmail,
+            confirmationTemplate.subject,
+            confirmationTemplate.html
+          )
+            .then((result: any) => {
+              if (result.success) {
+                console.log(
+                  `✅ Order confirmation email sent to: ${customerEmail}`
+                );
+              } else {
+                console.error(
+                  "❌ Failed to send order confirmation email:",
+                  result.error
+                );
+              }
+            })
+            .catch((err: any) => {
+              console.error("❌ Order confirmation email error:", err);
+            });
+
+          // Also send admin notification
+          const adminEmail = process.env.ADMIN_EMAIL;
+          if (adminEmail) {
+            const adminTemplate = emailTemplates.newOrderAdminNotification(
+              customerName || "Guest Customer",
+              customerEmail,
+              currentOrder.orderNumber,
+              currentOrder.totalPrice,
+              currentOrder.orderItems,
+              currentOrder.currency || "USD"
+            );
+
+            sendEmail(adminEmail, adminTemplate.subject, adminTemplate.html)
+              .then((result: any) => {
+                if (result.success) {
+                  console.log(`✅ Admin notification sent to: ${adminEmail}`);
+                } else {
+                  console.error(
+                    "❌ Failed to send admin notification:",
+                    result.error
+                  );
+                }
+              })
+              .catch((err: any) => {
+                console.error("❌ Admin notification error:", err);
+              });
+          }
+        } else {
+          // For other status changes, send status update email
+          const statusEmailTemplate = emailTemplates.orderStatusUpdate(
+            customerName || "Customer",
+            currentOrder.orderNumber,
+            status,
+            trackingNumber,
+            currentOrder.shippingAddress
+          );
+
+          sendEmail(
+            customerEmail,
+            statusEmailTemplate.subject,
+            statusEmailTemplate.html
+          )
+            .then((result: any) => {
+              if (result.success) {
+                console.log(
+                  `✅ Order status update email sent to: ${customerEmail}`
+                );
+              } else {
+                console.error(
+                  "❌ Failed to send status update email:",
+                  result.error
+                );
+              }
+            })
+            .catch((err: any) => {
+              console.error("❌ Status update email error:", err);
+            });
+        }
       } else {
         console.log("ℹ️ Email notification skipped:", {
           statusProvided: !!status,
