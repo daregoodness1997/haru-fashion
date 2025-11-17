@@ -344,7 +344,30 @@
     "image_1": "Imagen 1",
     "image_2": "Imagen 2",
     "current_image_kept": "La imagen actual se mantendrá si no se cambia",
-    "upload_new_image": "Subir una nueva imagen (máx. 5 MB)",
+    "upload_new_image": "Sube una nueva imagen (máx 5MB)",
     "uploading": "Subiendo..."
+  },
+  "Services": {
+    "additional_services": "Servicios Adicionales",
+    "services_description": "Más allá de nuestras hermosas colecciones, ofrecemos servicios personalizados para hacer excepcional tu viaje de estilo",
+    "event_styling": "Estilismo de Eventos",
+    "event_styling_desc": "Estilismo profesional para bodas, fiestas y ocasiones especiales",
+    "consultation": "Consulta de Estilo",
+    "consultation_desc": "Obtén asesoramiento de moda experto adaptado a tu estilo y preferencias únicas",
+    "custom_attire": "Ropa Personalizada",
+    "custom_attire_desc": "Solicita diseños a medida hechos exclusivamente para ti",
+    "fill_form_below": "Completa el formulario a continuación y te responderemos en 24-48 horas",
+    "your_name": "Tu Nombre",
+    "name_placeholder": "Ingresa tu nombre completo",
+    "email": "Correo Electrónico",
+    "email_placeholder": "tu.correo@ejemplo.com",
+    "phone": "Número de Teléfono",
+    "phone_placeholder": "+34 xxx xxx xxx",
+    "message": "Cuéntanos Más",
+    "message_placeholder": "Describe tus necesidades, detalles del evento, preferencias o cualquier requisito específico...",
+    "send_request": "Enviar Solicitud",
+    "cancel": "Cancelar",
+    "request_sent_success": "¡Tu solicitud ha sido enviada con éxito! Te contactaremos pronto.",
+    "request_failed": "Error al enviar la solicitud. Por favor, inténtalo de nuevo o contáctanos directamente."
   }
 }

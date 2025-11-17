@@ -586,6 +586,163 @@ export const emailTemplates = {
   },
 };
 
+// Service Request Email Function
+export async function sendServiceRequestEmail(params: {
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  message: string;
+  serviceType: string;
+  category: string;
+}): Promise<{ success: boolean; error?: string }> {
+  const {
+    customerName,
+    customerEmail,
+    customerPhone,
+    message,
+    serviceType,
+    category,
+  } = params;
+
+  const serviceNames: Record<string, string> = {
+    event_styling: "Event Styling",
+    consultation: "Style Consultation",
+    custom_attire: "Custom Attire Request",
+  };
+
+  const serviceName = serviceNames[serviceType] || serviceType;
+
+  // Email to customer (confirmation)
+  const customerSubject = `Service Request Received - ${serviceName}`;
+  const customerHtml = getEmailTemplate(`
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center" style="padding:45px 0;">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;background:#F8F8F8;">
+    <tr><td style="padding:60px 50px;">
+      <!-- Logo -->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding-bottom:40px;">
+          <h1 style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:28px;font-weight:800;color:#333;">SHUNAPEE FASHION HOUSE</h1>
+        </td></tr>
+      </table>
+
+      <h2 style="margin:0 0 20px 0;font-family:Roboto,Arial,sans-serif;font-size:24px;font-weight:700;color:#333;">
+        ✨ Service Request Received
+      </h2>
+
+      <p style="margin:0 0 30px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+        Hi ${customerName},
+      </p>
+
+      <p style="margin:0 0 20px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+        Thank you for your interest in our <strong>${serviceName}</strong> service! We've received your request and our team will review it shortly.
+      </p>
+
+      <div style="background:#fff;border:2px solid #9333ea;border-radius:8px;padding:24px;margin:30px 0;">
+        <h3 style="margin:0 0 15px 0;font-family:Roboto,Arial,sans-serif;font-size:18px;font-weight:700;color:#9333ea;">
+          Your Request Details
+        </h3>
+        <p style="margin:8px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+          <strong>Service:</strong> ${serviceName}
+        </p>
+        <p style="margin:8px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+          <strong>Category:</strong> ${
+            category.charAt(0).toUpperCase() + category.slice(1)
+          }
+        </p>
+        <p style="margin:8px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+          <strong>Your Message:</strong><br/>
+          ${message}
+        </p>
+      </div>
+
+      <p style="margin:20px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+        We typically respond within 24-48 hours. If you have any urgent questions, please don't hesitate to contact us directly.
+      </p>
+
+      <p style="margin:30px 0 0 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
+        Best regards,<br/>
+        <strong>The Shunapee Fashion House Team</strong>
+      </p>
+    </td></tr>
+
+    <!-- Footer -->
+    <tr><td style="background:#242424;padding:48px 50px;text-align:center;">
+      <p style="margin:0;font-family:Roboto,Arial,sans-serif;font-size:12px;color:#888;">
+        © ${new Date().getFullYear()} Shunapee Fashion House. All rights reserved.
+      </p>
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+  `);
+
+  // Email to admin (notification)
+  const adminSubject = `New Service Request: ${serviceName}`;
+  const adminHtml = getEmailTemplate(`
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center" style="padding:45px 0;">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;background:#F8F8F8;">
+    <tr><td style="padding:60px 50px;">
+      <h2 style="margin:0 0 20px 0;font-family:Roboto,Arial,sans-serif;font-size:24px;font-weight:700;color:#333;">
+        🔔 New Service Request
+      </h2>
+
+      <div style="background:#fff;border:2px solid #9333ea;border-radius:8px;padding:24px;margin:20px 0;">
+        <h3 style="margin:0 0 15px 0;font-family:Roboto,Arial,sans-serif;font-size:18px;font-weight:700;color:#9333ea;">
+          ${serviceName}
+        </h3>
+        <p style="margin:8px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+          <strong>Customer Name:</strong> ${customerName}
+        </p>
+        <p style="margin:8px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+          <strong>Email:</strong> ${customerEmail}
+        </p>
+        <p style="margin:8px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+          <strong>Phone:</strong> ${customerPhone}
+        </p>
+        <p style="margin:8px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+          <strong>Category:</strong> ${
+            category.charAt(0).toUpperCase() + category.slice(1)
+          }
+        </p>
+        <p style="margin:15px 0 0 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+          <strong>Message:</strong><br/>
+          ${message}
+        </p>
+      </div>
+
+      <p style="margin:20px 0 0 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+        Please respond to the customer at: <a href="mailto:${customerEmail}" style="color:#9333ea;">${customerEmail}</a>
+      </p>
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+  `);
+
+  // Send both emails
+  const customerResult = await sendEmail(
+    customerEmail,
+    customerSubject,
+    customerHtml
+  );
+  const adminResult = await sendEmail(
+    process.env.ADMIN_EMAIL || BREVO_SENDER_EMAIL!,
+    adminSubject,
+    adminHtml
+  );
+
+  return {
+    success: customerResult.success && adminResult.success,
+    error: !customerResult.success
+      ? "Failed to send confirmation email"
+      : !adminResult.success
+      ? "Failed to send admin notification"
+      : undefined,
+  };
+}
+
 // Send email function using Brevo API
 export async function sendEmail(
   to: string,

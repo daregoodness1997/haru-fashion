@@ -46,8 +46,24 @@ export default async function handler(
       });
     }
 
-    const { fullname, phone, shippingAddress, currentPassword, newPassword } =
-      req.body;
+    const {
+      fullname,
+      phone,
+      shippingAddress,
+      currentPassword,
+      newPassword,
+      chest,
+      waist,
+      hips,
+      shoulderWidth,
+      sleeveLength,
+      inseam,
+      outseam,
+      neckSize,
+      height,
+      weight,
+      additionalNotes,
+    } = req.body;
 
     // Validate required fields
     if (!fullname) {
@@ -64,6 +80,17 @@ export default async function handler(
       fullname,
       phone: phone || null,
       shippingAddress: shippingAddress || null,
+      chest: chest || null,
+      waist: waist || null,
+      hips: hips || null,
+      shoulderWidth: shoulderWidth || null,
+      sleeveLength: sleeveLength || null,
+      inseam: inseam || null,
+      outseam: outseam || null,
+      neckSize: neckSize || null,
+      height: height || null,
+      weight: weight || null,
+      additionalNotes: additionalNotes || null,
     };
 
     // If user wants to change password, validate current password and hash new one

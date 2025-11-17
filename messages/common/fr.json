@@ -344,7 +344,30 @@
     "image_1": "Image 1",
     "image_2": "Image 2",
     "current_image_kept": "L'image actuelle sera conservée si elle n'est pas modifiée",
-    "upload_new_image": "Télécharger une nouvelle image (max 5 Mo)",
+    "upload_new_image": "Téléchargez une nouvelle image (max 5MB)",
     "uploading": "Téléchargement..."
+  },
+  "Services": {
+    "additional_services": "Services Additionnels",
+    "services_description": "Au-delà de nos belles collections, nous offrons des services personnalisés pour rendre votre parcours de style exceptionnel",
+    "event_styling": "Stylisme d'Événement",
+    "event_styling_desc": "Stylisme professionnel pour mariages, fêtes et occasions spéciales",
+    "consultation": "Consultation de Style",
+    "consultation_desc": "Obtenez des conseils de mode d'experts adaptés à votre style et préférences uniques",
+    "custom_attire": "Tenue Sur Mesure",
+    "custom_attire_desc": "Demandez des créations sur mesure faites exclusivement pour vous",
+    "fill_form_below": "Remplissez le formulaire ci-dessous et nous vous répondrons dans les 24-48 heures",
+    "your_name": "Votre Nom",
+    "name_placeholder": "Entrez votre nom complet",
+    "email": "Adresse Email",
+    "email_placeholder": "votre.email@example.com",
+    "phone": "Numéro de Téléphone",
+    "phone_placeholder": "+33 x xx xx xx xx",
+    "message": "Dites-Nous Plus",
+    "message_placeholder": "Décrivez vos besoins, détails de l'événement, préférences ou toute exigence spécifique...",
+    "send_request": "Envoyer la Demande",
+    "cancel": "Annuler",
+    "request_sent_success": "Votre demande a été envoyée avec succès ! Nous vous contacterons bientôt.",
+    "request_failed": "Échec de l'envoi de la demande. Veuillez réessayer ou nous contacter directement."
   }
 }

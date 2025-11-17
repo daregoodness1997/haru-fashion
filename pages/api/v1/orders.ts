@@ -102,16 +102,19 @@ export default async function handler(
         customerPhone: customerPhone || null,
         orderItems: {
           create: await Promise.all(
-            products.map(async (item: { id: number; quantity: number }) => {
-              const product = await prisma.product.findUnique({
-                where: { id: item.id },
-              });
-              return {
-                productId: item.id,
-                quantity: item.quantity,
-                price: product?.price || 0,
-              };
-            })
+            products.map(
+              async (item: { id: number; quantity: number; size?: string }) => {
+                const product = await prisma.product.findUnique({
+                  where: { id: item.id },
+                });
+                return {
+                  productId: item.id,
+                  quantity: item.quantity,
+                  price: product?.price || 0,
+                  size: item.size || "M",
+                };
+              }
+            )
           ),
         },
       };

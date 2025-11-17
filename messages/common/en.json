@@ -342,5 +342,28 @@
     "current_image_kept": "Current image will be kept if not changed",
     "upload_new_image": "Upload a new image (max 5MB)",
     "uploading": "Uploading..."
+  },
+  "Services": {
+    "additional_services": "Additional Services",
+    "services_description": "Beyond our beautiful collections, we offer personalized services to make your style journey exceptional",
+    "event_styling": "Event Styling",
+    "event_styling_desc": "Professional styling for weddings, parties, and special occasions",
+    "consultation": "Style Consultation",
+    "consultation_desc": "Get expert fashion advice tailored to your unique style and preferences",
+    "custom_attire": "Custom Attire",
+    "custom_attire_desc": "Request bespoke designs made exclusively for you",
+    "fill_form_below": "Fill out the form below and we'll get back to you within 24-48 hours",
+    "your_name": "Your Name",
+    "name_placeholder": "Enter your full name",
+    "email": "Email Address",
+    "email_placeholder": "your.email@example.com",
+    "phone": "Phone Number",
+    "phone_placeholder": "+234 xxx xxx xxxx",
+    "message": "Tell Us More",
+    "message_placeholder": "Describe your needs, event details, preferences, or any specific requirements...",
+    "send_request": "Send Request",
+    "cancel": "Cancel",
+    "request_sent_success": "Your request has been sent successfully! We'll contact you soon.",
+    "request_failed": "Failed to send request. Please try again or contact us directly."
   }
 }

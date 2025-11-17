@@ -11,6 +11,7 @@ import Heart from "../../public/icons/Heart";
 import DownArrow from "../../public/icons/DownArrow";
 import FacebookLogo from "../../public/icons/FacebookLogo";
 import InstagramLogo from "../../public/icons/InstagramLogo";
+import WhatsAppLogo from "../../public/icons/WhatsAppLogo";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import GhostButton from "../../components/Buttons/GhostButton";
@@ -56,6 +57,7 @@ const Product: React.FC<Props> = ({ product, products }) => {
   const currentItem = {
     ...product,
     qty: currentQty,
+    size: size,
   };
 
   const handleWishlist = () => {
@@ -248,10 +250,73 @@ const Product: React.FC<Props> = ({ product, products }) => {
                 </>
               )}
             </Disclosure>
+
+            {/* ===== Policy Section ===== */}
+            <Disclosure>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="py-2 focus:outline-none text-left mb-4 border-b-2 border-gray200 flex items-center justify-between">
+                    <span className="font-semibold">
+                      Shunapee Fashion House – Policy
+                    </span>
+                    <DownArrow
+                      extraClass={`${
+                        open ? "" : "transform rotate-180"
+                      } w-5 h-5 text-purple-500`}
+                    />
+                  </Disclosure.Button>
+                  <Disclosure.Panel
+                    className={`text-gray400 text-sm animate__animated animate__bounceIn mb-4`}
+                  >
+                    <ul className="space-y-2 list-disc pl-5">
+                      <li>
+                        80% booking fee is required to confirm all orders.
+                      </li>
+                      <li>2–3 fittings required for luxury orders.</li>
+                      <li>
+                        Delivery available worldwide – delivery fee applies.
+                      </li>
+                      <li>
+                        Production timeline: 7–21 working days depending on the
+                        design.
+                      </li>
+                      <li>Urgent orders attract 20%–40% extra fee.</li>
+                      <li>No refunds once payment is made.</li>
+                      <li>
+                        We are not liable for wrong self-submitted measurements.
+                      </li>
+                    </ul>
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+
             <div className="flex items-center space-x-4 mt-4">
               <span>{t("share")}</span>
-              <FacebookLogo extraClass="h-4 cursor-pointer text-gray400 hover:text-gray500" />
-              <InstagramLogo extraClass="h-4 cursor-pointer text-gray400 hover:text-gray500" />
+              <a
+                href="https://wa.me/2348066061271"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on WhatsApp"
+              >
+                <WhatsAppLogo extraClass="h-4 cursor-pointer text-gray400 hover:text-gray500" />
+              </a>
+              <a
+                href="https://www.facebook.com/shunapeefashionhouse"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on Facebook"
+              >
+                <FacebookLogo extraClass="h-4 cursor-pointer text-gray400 hover:text-gray500" />
+              </a>
+              <a
+                href="https://www.instagram.com/shunapeefashionhouse"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on Instagram"
+              >
+                <InstagramLogo extraClass="h-4 cursor-pointer text-gray400 hover:text-gray500" />
+              </a>
             </div>
           </div>
         </div>

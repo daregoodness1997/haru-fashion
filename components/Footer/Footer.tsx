@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 
 import FacebookLogo from "../../public/icons/FacebookLogo";
 import InstagramLogo from "../../public/icons/InstagramLogo";
+import WhatsAppLogo from "../../public/icons/WhatsAppLogo";
 import Button from "../Buttons/Button";
 import Input from "../Input/Input";
 import styles from "./Footer.module.css";
@@ -85,14 +86,26 @@ export default function Footer() {
               {t("follow_us_on_social_media")}:
             </span>{" "}
             <a
-              href="www.facebook.com"
-              aria-label="Facebook Page for Shunapee Fashion House"
+              href="https://wa.me/2348066061271"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp - Shunapee Fashion House"
+            >
+              <WhatsAppLogo />
+            </a>
+            <a
+              href="https://www.facebook.com/shunapeefashionhouse"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook Page - Shunapee Fashion House"
             >
               <FacebookLogo />
             </a>
             <a
-              href="www.ig.com"
-              aria-label="Instagram Account for Shunapee Fashion House"
+              href="https://www.instagram.com/shunapeefashionhouse"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram Account - Shunapee Fashion House"
             >
               <InstagramLogo />
             </a>

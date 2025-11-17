@@ -28,6 +28,19 @@ const EditProfile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Measurements
+  const [chest, setChest] = useState("");
+  const [waist, setWaist] = useState("");
+  const [hips, setHips] = useState("");
+  const [shoulderWidth, setShoulderWidth] = useState("");
+  const [sleeveLength, setSleeveLength] = useState("");
+  const [inseam, setInseam] = useState("");
+  const [outseam, setOutseam] = useState("");
+  const [neckSize, setNeckSize] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [additionalNotes, setAdditionalNotes] = useState("");
+
   useEffect(() => {
     if (!auth.user) {
       router.push("/");
@@ -39,6 +52,28 @@ const EditProfile = () => {
     setEmail(auth.user.email || "");
     setPhone(auth.user.phone || "");
     setShippingAddress(auth.user.shippingAddress || "");
+    // @ts-ignore
+    setChest(auth.user.chest || "");
+    // @ts-ignore
+    setWaist(auth.user.waist || "");
+    // @ts-ignore
+    setHips(auth.user.hips || "");
+    // @ts-ignore
+    setShoulderWidth(auth.user.shoulderWidth || "");
+    // @ts-ignore
+    setSleeveLength(auth.user.sleeveLength || "");
+    // @ts-ignore
+    setInseam(auth.user.inseam || "");
+    // @ts-ignore
+    setOutseam(auth.user.outseam || "");
+    // @ts-ignore
+    setNeckSize(auth.user.neckSize || "");
+    // @ts-ignore
+    setHeight(auth.user.height || "");
+    // @ts-ignore
+    setWeight(auth.user.weight || "");
+    // @ts-ignore
+    setAdditionalNotes(auth.user.additionalNotes || "");
   }, [auth.user, router]);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -69,6 +104,17 @@ const EditProfile = () => {
         fullname,
         phone,
         shippingAddress,
+        chest,
+        waist,
+        hips,
+        shoulderWidth,
+        sleeveLength,
+        inseam,
+        outseam,
+        neckSize,
+        height,
+        weight,
+        additionalNotes,
       };
 
       // Only include password if user wants to change it
@@ -269,6 +315,168 @@ const EditProfile = () => {
                     className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
                     placeholder={t("address_placeholder")}
                   />
+                </div>
+              </div>
+
+              {/* Measurements Section */}
+              <div className="p-8 border-b border-gray200">
+                <div className="flex items-center mb-6">
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                    <span className="text-2xl">📏</span>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold">
+                      Body Measurements
+                    </h2>
+                    <p className="text-sm text-gray400">
+                      Add your measurements for custom-fitted orders (Optional)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Chest (inches/cm)
+                    </label>
+                    <input
+                      type="text"
+                      value={chest}
+                      onChange={(e) => setChest(e.target.value)}
+                      placeholder="e.g., 38 inches"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Waist (inches/cm)
+                    </label>
+                    <input
+                      type="text"
+                      value={waist}
+                      onChange={(e) => setWaist(e.target.value)}
+                      placeholder="e.g., 32 inches"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Hips (inches/cm)
+                    </label>
+                    <input
+                      type="text"
+                      value={hips}
+                      onChange={(e) => setHips(e.target.value)}
+                      placeholder="e.g., 40 inches"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Shoulder Width
+                    </label>
+                    <input
+                      type="text"
+                      value={shoulderWidth}
+                      onChange={(e) => setShoulderWidth(e.target.value)}
+                      placeholder="e.g., 17 inches"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Sleeve Length
+                    </label>
+                    <input
+                      type="text"
+                      value={sleeveLength}
+                      onChange={(e) => setSleeveLength(e.target.value)}
+                      placeholder="e.g., 24 inches"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Neck Size
+                    </label>
+                    <input
+                      type="text"
+                      value={neckSize}
+                      onChange={(e) => setNeckSize(e.target.value)}
+                      placeholder="e.g., 15.5 inches"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Inseam (pants)
+                    </label>
+                    <input
+                      type="text"
+                      value={inseam}
+                      onChange={(e) => setInseam(e.target.value)}
+                      placeholder="e.g., 30 inches"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Outseam (pants)
+                    </label>
+                    <input
+                      type="text"
+                      value={outseam}
+                      onChange={(e) => setOutseam(e.target.value)}
+                      placeholder="e.g., 42 inches"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Height
+                    </label>
+                    <input
+                      type="text"
+                      value={height}
+                      onChange={(e) => setHeight(e.target.value)}
+                      placeholder="e.g., 5'10 or 178cm"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Weight
+                    </label>
+                    <input
+                      type="text"
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                      placeholder="e.g., 150 lbs or 68kg"
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
+
+                  <div className="md:col-span-3">
+                    <label className="block text-sm font-medium text-gray700 mb-2">
+                      Additional Notes
+                    </label>
+                    <textarea
+                      value={additionalNotes}
+                      onChange={(e) => setAdditionalNotes(e.target.value)}
+                      rows={3}
+                      placeholder="Any specific fitting preferences, body shape notes, or special requirements..."
+                      className="w-full px-4 py-3 border-2 border-gray300 rounded focus:outline-none focus:border-gray500 transition-colors"
+                    />
+                  </div>
                 </div>
               </div>
 

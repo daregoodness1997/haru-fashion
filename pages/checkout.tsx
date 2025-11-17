@@ -64,6 +64,7 @@ const ShoppingCart = () => {
   const products = cart.map((item) => ({
     id: item.id,
     quantity: item.qty,
+    size: item.size || "M",
   }));
 
   // Convert NGN to Kobo (Paystack smallest currency unit)

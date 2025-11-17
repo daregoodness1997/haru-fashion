@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { Menu } from "@headlessui/react";
+import { Menu, Dialog, Transition } from "@headlessui/react";
 import { useTranslations } from "next-intl";
+import { useState, Fragment } from "react";
 
 import prisma from "../../lib/prisma";
 import Header from "../../components/Header/Header";
@@ -28,10 +29,20 @@ const ProductCategory: React.FC<Props> = ({
   orderby,
 }) => {
   const t = useTranslations("Category");
+  const tServices = useTranslations("Services");
 
   const router = useRouter();
   const { category } = router.query;
   const lastPage = Math.ceil(numberOfProducts / 10);
+
+  const [showServiceModal, setShowServiceModal] = useState(false);
+  const [selectedService, setSelectedService] = useState<string>("");
+  const [serviceFormData, setServiceFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
 
   const capitalizedCategory =
     category!.toString().charAt(0).toUpperCase() +
@@ -40,10 +51,47 @@ const ProductCategory: React.FC<Props> = ({
   const firstIndex = page === 1 ? page : page * 10 - 9;
   const lastIndex = page * 10;
 
+  const handleServiceRequest = (service: string) => {
+    setSelectedService(service);
+    setShowServiceModal(true);
+  };
+
+  const handleServiceSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      // Send service request email
+      const response = await fetch("/api/v1/service-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...serviceFormData,
+          service: selectedService,
+          category: category,
+        }),
+      });
+
+      if (response.ok) {
+        alert(tServices("request_sent_success"));
+        setShowServiceModal(false);
+        setServiceFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        alert(tServices("request_failed"));
+      }
+    } catch (error) {
+      console.error("Error sending service request:", error);
+      alert(tServices("request_failed"));
+    }
+  };
+
   return (
     <div>
       {/* ===== Head Section ===== */}
-      <Header title={`${capitalizedCategory} - Shunapee Fashion House Fashion`} />
+      <Header
+        title={`${capitalizedCategory} - Shunapee Fashion House Fashion`}
+      />
 
       <main id="main-content">
         {/* ===== Breadcrumb Section ===== */}
@@ -88,7 +136,222 @@ const ProductCategory: React.FC<Props> = ({
             />
           )}
         </div>
+
+        {/* ===== Services Section ===== */}
+        <div className="app-x-padding app-max-width mt-8 mb-6">
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-6">
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold text-purple-900 mb-2">
+                ✨ {tServices("additional_services")}
+              </h2>
+              <p className="text-gray-600">
+                {tServices("services_description")}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Event Styling Service */}
+              <button
+                onClick={() => handleServiceRequest("event_styling")}
+                className="bg-white border-2 border-purple-200 hover:border-purple-400 rounded-lg p-4 text-left transition-all hover:shadow-lg group"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center group-hover:bg-purple-200 transition-colors flex-shrink-0">
+                    <span className="text-2xl">👗</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-1 text-purple-900">
+                      {tServices("event_styling")}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {tServices("event_styling_desc")}
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              {/* Style Consultation */}
+              <button
+                onClick={() => handleServiceRequest("consultation")}
+                className="bg-white border-2 border-pink-200 hover:border-pink-400 rounded-lg p-4 text-left transition-all hover:shadow-lg group"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center group-hover:bg-pink-200 transition-colors flex-shrink-0">
+                    <span className="text-2xl">💡</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-1 text-pink-900">
+                      {tServices("consultation")}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {tServices("consultation_desc")}
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              {/* Custom Attire Request */}
+              <button
+                onClick={() => handleServiceRequest("custom_attire")}
+                className="bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-4 text-left transition-all hover:shadow-lg group"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors flex-shrink-0">
+                    <span className="text-2xl">✂️</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-1 text-blue-900">
+                      {tServices("custom_attire")}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {tServices("custom_attire_desc")}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
+
+      {/* ===== Service Request Modal ===== */}
+      <Transition show={showServiceModal} as={Fragment}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 z-10 overflow-y-auto"
+          style={{ zIndex: 99999 }}
+          static
+          open={showServiceModal}
+          onClose={() => setShowServiceModal(false)}
+        >
+          <div className="min-h-screen px-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Dialog.Overlay className="fixed inset-0 bg-gray500 opacity-50" />
+            </Transition.Child>
+
+            {/* This element is to trick the browser into centering the modal contents. */}
+            <span
+              className="inline-block h-screen align-middle"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <div className="relative inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl">
+                <button
+                  type="button"
+                  className="absolute right-5 top-2 outline-none focus:outline-none text-2xl"
+                  onClick={() => setShowServiceModal(false)}
+                >
+                  &#10005;
+                </button>
+
+                <Dialog.Title
+                  as="h3"
+                  className="text-4xl text-center my-8 font-medium leading-6 text-gray-900"
+                >
+                  {tServices(selectedService)}
+                </Dialog.Title>
+
+                <p className="text-center text-gray400 mb-4">
+                  {tServices("fill_form_below")}
+                </p>
+
+                <form onSubmit={handleServiceSubmit} className="mt-2">
+                  <input
+                    type="text"
+                    required
+                    value={serviceFormData.name}
+                    onChange={(e) =>
+                      setServiceFormData({
+                        ...serviceFormData,
+                        name: e.target.value,
+                      })
+                    }
+                    className="w-full border-2 border-gray300 px-4 py-2 mb-4 focus:border-gray500 focus:outline-none"
+                    placeholder={`${tServices("your_name")} *`}
+                  />
+
+                  <input
+                    type="email"
+                    required
+                    value={serviceFormData.email}
+                    onChange={(e) =>
+                      setServiceFormData({
+                        ...serviceFormData,
+                        email: e.target.value,
+                      })
+                    }
+                    className="w-full border-2 border-gray300 px-4 py-2 mb-4 focus:border-gray500 focus:outline-none"
+                    placeholder={`${tServices("email")} *`}
+                  />
+
+                  <input
+                    type="tel"
+                    required
+                    value={serviceFormData.phone}
+                    onChange={(e) =>
+                      setServiceFormData({
+                        ...serviceFormData,
+                        phone: e.target.value,
+                      })
+                    }
+                    className="w-full border-2 border-gray300 px-4 py-2 mb-4 focus:border-gray500 focus:outline-none"
+                    placeholder={`${tServices("phone")} *`}
+                  />
+
+                  <textarea
+                    required
+                    value={serviceFormData.message}
+                    onChange={(e) =>
+                      setServiceFormData({
+                        ...serviceFormData,
+                        message: e.target.value,
+                      })
+                    }
+                    rows={4}
+                    className="w-full border-2 border-gray300 px-4 py-2 mb-4 focus:border-gray500 focus:outline-none"
+                    placeholder={`${tServices("message")} *`}
+                  />
+
+                  <button
+                    type="submit"
+                    className="w-full text-center text-xl mb-4 bg-gray500 text-white py-3 hover:bg-gray400 transition-colors"
+                  >
+                    {tServices("send_request")}
+                  </button>
+
+                  <div className="text-center text-gray400">
+                    <button
+                      type="button"
+                      onClick={() => setShowServiceModal(false)}
+                      className="text-gray500 focus:outline-none focus:underline"
+                    >
+                      {tServices("cancel")}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
 
       {/* ===== Footer Section ===== */}
       <Footer />

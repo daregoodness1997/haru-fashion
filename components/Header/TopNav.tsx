@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCurrency } from "../../context/CurrencyContext";
 import InstagramLogo from "../../public/icons/InstagramLogo";
 import FacebookLogo from "../../public/icons/FacebookLogo";
+import WhatsAppLogo from "../../public/icons/WhatsAppLogo";
 import DownArrow from "../../public/icons/DownArrow";
 import styles from "./Header.module.css";
 
@@ -47,12 +48,32 @@ const TopNav = () => {
       <div className="flex justify-between app-max-width">
         <ul className={`flex ${styles.topLeftMenu}`}>
           <li>
-            <a href="#" aria-label="Shunapee Fashion House Facebook Page">
+            <a
+              href="https://wa.me/2348066061271"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp - Shunapee Fashion House"
+            >
+              <WhatsAppLogo />
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.facebook.com/shunapeefashionhouse"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook Page - Shunapee Fashion House"
+            >
               <FacebookLogo />
             </a>
           </li>
           <li>
-            <a href="#" aria-label="Shunapee Fashion House Instagram Account">
+            <a
+              href="https://www.instagram.com/shunapeefashionhouse"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram Account - Shunapee Fashion House"
+            >
               <InstagramLogo />
             </a>
           </li>
