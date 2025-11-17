@@ -170,17 +170,19 @@ export default async function handler(
       console.log("✅ Order updated successfully by admin");
 
       // Send email notification if status changed
-      if (
-        status &&
-        status !== existingOrder.status &&
-        existingOrder.customer.email
-      ) {
+      // For guest orders, use customerEmail; for user orders, use customer.email
+      const customerEmail =
+        existingOrder.customer?.email || existingOrder.customerEmail;
+      const customerName =
+        existingOrder.customer?.fullname || existingOrder.customerName;
+
+      if (status && status !== existingOrder.status && customerEmail) {
         console.log(
           "📧 Status changed, sending email notification to customer..."
         );
 
         const statusEmailTemplate = emailTemplates.orderStatusUpdate(
-          existingOrder.customer.fullname,
+          customerName || "Customer",
           existingOrder.orderNumber,
           status,
           trackingNumber || existingOrder.trackingNumber,
@@ -188,7 +190,7 @@ export default async function handler(
         );
 
         sendEmail(
-          existingOrder.customer.email,
+          customerEmail,
           statusEmailTemplate.subject,
           statusEmailTemplate.html
         )
