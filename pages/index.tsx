@@ -160,7 +160,7 @@ const Home: React.FC<Props> = ({ products }) => {
         <div className="border-gray100 border-b-2"></div>
 
         {/* ===== Our Shop Section */}
-        <section className="app-max-width mt-16 mb-20 flex flex-col justify-center items-center text-center">
+        {/* <section className="app-max-width mt-16 mb-20 flex flex-col justify-center items-center text-center">
           <div className="textBox w-3/4 md:w-2/4 lg:w-2/5 mb-6">
             <h2 className="text-3xl mb-6">{t("our_shop")}</h2>
             <span className="w-full">{t("our_shop_desc")}</span>
@@ -168,7 +168,7 @@ const Home: React.FC<Props> = ({ products }) => {
           <div className="w-full app-x-padding flex justify-center">
             <Image src={ourShop} alt="Our Shop" />
           </div>
-        </section>
+        </section> */}
       </main>
 
       {/* ===== Footer Section ===== */}
