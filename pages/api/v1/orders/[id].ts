@@ -128,7 +128,9 @@ export default async function handler(
           .then((result: any) => {
             if (result.success) {
               console.log(
-                `✅ Order status update email sent to: ${currentOrder.customer.email}`
+                `✅ Order status update email sent to: ${
+                  currentOrder?.customer?.email || ""
+                }`
               );
             } else {
               console.error(
