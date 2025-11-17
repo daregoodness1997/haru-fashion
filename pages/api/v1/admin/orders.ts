@@ -172,9 +172,9 @@ export default async function handler(
       // Send email notification if status changed
       // For guest orders, use customerEmail; for user orders, use customer.email
       const customerEmail =
-        existingOrder.customer?.email || existingOrder.customerEmail;
+        existingOrder.customer?.email || (existingOrder as any).customerEmail;
       const customerName =
-        existingOrder.customer?.fullname || existingOrder.customerName;
+        existingOrder.customer?.fullname || (existingOrder as any).customerName;
 
       if (status && status !== existingOrder.status && customerEmail) {
         console.log(
