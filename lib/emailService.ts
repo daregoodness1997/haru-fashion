@@ -594,6 +594,8 @@ export async function sendServiceRequestEmail(params: {
   message: string;
   serviceType: string;
   category: string;
+  images?: string[];
+  measurements?: any;
 }): Promise<{ success: boolean; error?: string }> {
   const {
     customerName,
@@ -602,6 +604,8 @@ export async function sendServiceRequestEmail(params: {
     message,
     serviceType,
     category,
+    images = [],
+    measurements,
   } = params;
 
   const serviceNames: Record<string, string> = {
@@ -611,6 +615,52 @@ export async function sendServiceRequestEmail(params: {
   };
 
   const serviceName = serviceNames[serviceType] || serviceType;
+
+  // Build images HTML if present
+  const imagesHtml =
+    images.length > 0
+      ? `
+      <div style="margin:20px 0;">
+        <h4 style="margin:0 0 10px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;font-weight:700;color:#333;">
+           Reference Images
+        </h4>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          ${images
+            .map(
+              (img) =>
+                `<img src="${img}" alt="Reference" style="width:150px;height:150px;object-fit:cover;border-radius:8px;" />`
+            )
+            .join("")}
+        </div>
+      </div>
+      `
+      : "";
+
+  // Build measurements HTML if present
+  const measurementsHtml =
+    measurements && Object.keys(measurements).some((key) => measurements[key])
+      ? `
+      <div style="margin:20px 0;">
+        <h4 style="margin:0 0 10px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;font-weight:700;color:#333;">
+           Measurements
+        </h4>
+        <div style="background:#f9f9f9;padding:15px;border-radius:8px;">
+          ${Object.entries(measurements)
+            .filter(([_, value]) => value)
+            .map(
+              ([key, value]) =>
+                `<p style="margin:4px 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">
+                <strong>${
+                  key.charAt(0).toUpperCase() +
+                  key.replace(/([A-Z])/g, " $1").slice(1)
+                }:</strong> ${value}
+              </p>`
+            )
+            .join("")}
+        </div>
+      </div>
+      `
+      : "";
 
   // Email to customer (confirmation)
   const customerSubject = `Service Request Received - ${serviceName}`;
@@ -627,7 +677,7 @@ export async function sendServiceRequestEmail(params: {
       </table>
 
       <h2 style="margin:0 0 20px 0;font-family:Roboto,Arial,sans-serif;font-size:24px;font-weight:700;color:#333;">
-        ✨ Service Request Received
+         Service Request Received
       </h2>
 
       <p style="margin:0 0 30px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
@@ -654,6 +704,8 @@ export async function sendServiceRequestEmail(params: {
           <strong>Your Message:</strong><br/>
           ${message}
         </p>
+        ${imagesHtml}
+        ${measurementsHtml}
       </div>
 
       <p style="margin:20px 0;font-family:Roboto,Arial,sans-serif;font-size:16px;color:#333;">
@@ -710,6 +762,8 @@ export async function sendServiceRequestEmail(params: {
           <strong>Message:</strong><br/>
           ${message}
         </p>
+        ${imagesHtml}
+        ${measurementsHtml}
       </div>
 
       <p style="margin:20px 0 0 0;font-family:Roboto,Arial,sans-serif;font-size:14px;color:#666;">

@@ -43,6 +43,16 @@ const ProductCategory: React.FC<Props> = ({
     phone: "",
     message: "",
   });
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [measurements, setMeasurements] = useState({
+    chest: "",
+    waist: "",
+    hips: "",
+    shoulderWidth: "",
+    sleeveLength: "",
+    inseam: "",
+    height: "",
+  });
 
   const capitalizedCategory =
     category!.toString().charAt(0).toUpperCase() +
@@ -56,27 +66,56 @@ const ProductCategory: React.FC<Props> = ({
     setShowServiceModal(true);
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setUploadedImages((prev) => [...prev, ...filesArray]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleServiceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      // Send service request email
+      const formData = new FormData();
+      formData.append("name", serviceFormData.name);
+      formData.append("email", serviceFormData.email);
+      formData.append("phone", serviceFormData.phone);
+      formData.append("message", serviceFormData.message);
+      formData.append("service", selectedService);
+      formData.append("category", category as string);
+
+      // Add images if custom attire
+      if (selectedService === "custom_attire") {
+        uploadedImages.forEach((image) => {
+          formData.append("images", image);
+        });
+        formData.append("measurements", JSON.stringify(measurements));
+      }
+
       const response = await fetch("/api/v1/service-request", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...serviceFormData,
-          service: selectedService,
-          category: category,
-        }),
+        body: formData,
       });
 
       if (response.ok) {
         alert(tServices("request_sent_success"));
         setShowServiceModal(false);
         setServiceFormData({ name: "", email: "", phone: "", message: "" });
+        setUploadedImages([]);
+        setMeasurements({
+          chest: "",
+          waist: "",
+          hips: "",
+          shoulderWidth: "",
+          sleeveLength: "",
+          inseam: "",
+          height: "",
+        });
       } else {
         alert(tServices("request_failed"));
       }
@@ -329,6 +368,139 @@ const ProductCategory: React.FC<Props> = ({
                     className="w-full border-2 border-gray300 px-4 py-2 mb-4 focus:border-gray500 focus:outline-none"
                     placeholder={`${tServices("message")} *`}
                   />
+
+                  {/* Show images and measurements for Custom Attire */}
+                  {selectedService === "custom_attire" && (
+                    <>
+                      {/* Image Upload */}
+                      <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          📷 Upload Reference Images
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleImageUpload}
+                          className="w-full border-2 border-gray300 px-4 py-2 focus:border-gray500 focus:outline-none"
+                        />
+                        {uploadedImages.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {uploadedImages.map((img, index) => (
+                              <div key={index} className="relative">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={URL.createObjectURL(img)}
+                                  alt={`Upload ${index + 1}`}
+                                  className="w-16 h-16 object-cover rounded"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => removeImage(index)}
+                                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Measurements */}
+                      <div className="mb-4 border-t-2 border-gray300 pt-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          📏 Your Measurements (Optional)
+                        </label>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={measurements.chest}
+                            onChange={(e) =>
+                              setMeasurements({
+                                ...measurements,
+                                chest: e.target.value,
+                              })
+                            }
+                            className="border-2 border-gray300 px-3 py-2 focus:border-gray500 focus:outline-none text-sm"
+                            placeholder="Chest (inches)"
+                          />
+                          <input
+                            type="text"
+                            value={measurements.waist}
+                            onChange={(e) =>
+                              setMeasurements({
+                                ...measurements,
+                                waist: e.target.value,
+                              })
+                            }
+                            className="border-2 border-gray300 px-3 py-2 focus:border-gray500 focus:outline-none text-sm"
+                            placeholder="Waist (inches)"
+                          />
+                          <input
+                            type="text"
+                            value={measurements.hips}
+                            onChange={(e) =>
+                              setMeasurements({
+                                ...measurements,
+                                hips: e.target.value,
+                              })
+                            }
+                            className="border-2 border-gray300 px-3 py-2 focus:border-gray500 focus:outline-none text-sm"
+                            placeholder="Hips (inches)"
+                          />
+                          <input
+                            type="text"
+                            value={measurements.shoulderWidth}
+                            onChange={(e) =>
+                              setMeasurements({
+                                ...measurements,
+                                shoulderWidth: e.target.value,
+                              })
+                            }
+                            className="border-2 border-gray300 px-3 py-2 focus:border-gray500 focus:outline-none text-sm"
+                            placeholder="Shoulder Width"
+                          />
+                          <input
+                            type="text"
+                            value={measurements.sleeveLength}
+                            onChange={(e) =>
+                              setMeasurements({
+                                ...measurements,
+                                sleeveLength: e.target.value,
+                              })
+                            }
+                            className="border-2 border-gray300 px-3 py-2 focus:border-gray500 focus:outline-none text-sm"
+                            placeholder="Sleeve Length"
+                          />
+                          <input
+                            type="text"
+                            value={measurements.inseam}
+                            onChange={(e) =>
+                              setMeasurements({
+                                ...measurements,
+                                inseam: e.target.value,
+                              })
+                            }
+                            className="border-2 border-gray300 px-3 py-2 focus:border-gray500 focus:outline-none text-sm"
+                            placeholder="Inseam"
+                          />
+                          <input
+                            type="text"
+                            value={measurements.height}
+                            onChange={(e) =>
+                              setMeasurements({
+                                ...measurements,
+                                height: e.target.value,
+                              })
+                            }
+                            className="border-2 border-gray300 px-3 py-2 focus:border-gray500 focus:outline-none text-sm"
+                            placeholder="Height"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   <button
                     type="submit"

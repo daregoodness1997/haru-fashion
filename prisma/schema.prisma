@@ -113,3 +113,21 @@ model OrderItem {
   @@index([productId])
   @@map("order_items")
 }
+
+model ServiceRequest {
+  id           Int      @id @default(autoincrement())
+  serviceType  String
+  name         String
+  email        String
+  phone        String
+  message      String   @db.Text
+  images       String[]
+  measurements Json?
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status])
+  @@index([serviceType])
+  @@map("service_requests")
+}

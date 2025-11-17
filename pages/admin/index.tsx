@@ -169,7 +169,7 @@ export default function AdminDashboard() {
             {/* Quick Actions */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">⚡ Quick Actions</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Link
                   href="/admin/orders"
                   className="block bg-white border-2 border-gray200 hover:border-gray500 rounded-lg p-6 transition-all hover:shadow-lg group"
@@ -201,6 +201,23 @@ export default function AdminDashboard() {
                   </h3>
                   <p className="text-sm text-gray400">
                     {t("add_edit_delete_products")}
+                  </p>
+                </Link>
+
+                <Link
+                  href="/admin/service-requests"
+                  className="block bg-white border-2 border-gray200 hover:border-gray500 rounded-lg p-6 transition-all hover:shadow-lg group"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                      <span className="text-2xl">💼</span>
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    Service Requests
+                  </h3>
+                  <p className="text-sm text-gray400">
+                    View customer service requests
                   </p>
                 </Link>
 
