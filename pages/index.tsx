@@ -71,7 +71,7 @@ const Home: React.FC<Props> = ({ products }) => {
                 imgAlt="Bridal Corset"
               >
                 <LinkButton
-                  href="/product-category/bridal-corset"
+                  href="/product-category/women"
                   extraClass="absolute bottom-10-per z-20"
                 >
                   {t("bridal_corset")}
@@ -84,7 +84,7 @@ const Home: React.FC<Props> = ({ products }) => {
                 imgAlt="Bridal Materials"
               >
                 <LinkButton
-                  href="/product-category/bridal-materials"
+                  href="/product-category/material"
                   extraClass="absolute bottom-10-per z-20"
                 >
                   {t("bridal_materials")}
