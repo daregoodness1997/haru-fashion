@@ -14,15 +14,49 @@ export interface AdminApiRequest extends NextApiRequest {
 
 /**
  * Middleware to verify admin authentication
- * Expects userId in request body or query params
+ * Expects Authorization header with token or userId in body/query as fallback
  */
 export async function verifyAdmin(
   req: AdminApiRequest,
   res: NextApiResponse
 ): Promise<boolean> {
   try {
-    // Get user ID from body or query
-    const userId = req.body?.userId || req.query?.userId;
+    let userId: string | undefined;
+
+    // Try to get user ID from Authorization header token
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.substring(7);
+      try {
+        // Decode the base64 token to get email
+        const decoded = Buffer.from(token, "base64").toString("utf-8");
+        const email = decoded.split(":")[0];
+
+        // Find user by email
+        const user = await prisma.user.findUnique({
+          where: { email },
+          select: { id: true },
+        });
+
+        if (user) {
+          userId = user.id.toString();
+        }
+      } catch (error) {
+        console.error("[Admin Middleware] Token decode error:", error);
+      }
+    }
+
+    // Fallback to userId in body or query for backwards compatibility
+    if (!userId) {
+      userId = req.body?.userId || req.query?.userId;
+    }
+
+    console.log(
+      "[Admin Middleware] Resolved userId:",
+      userId,
+      "Method:",
+      req.method
+    );
 
     if (!userId) {
       res.status(401).json({
@@ -45,11 +79,16 @@ export async function verifyAdmin(
       },
     });
 
+    console.log(
+      "[Admin Middleware] User lookup result:",
+      user ? `Found: ${user.email} (isAdmin: ${user.isAdmin})` : "Not found"
+    );
+
     if (!user) {
       res.status(401).json({
         success: false,
         error: {
-          message: "User not found",
+          message: `User not found with ID: ${userId}. Please log out and log in again.`,
         },
       });
       await prisma.$disconnect();

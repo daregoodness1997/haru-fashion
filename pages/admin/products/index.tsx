@@ -111,9 +111,13 @@ export default function AdminProducts() {
         await axios.put(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/admin/products`,
           {
-            userId: auth.user?.id,
             id: editingProduct.id,
             ...productData,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${auth.user?.token}`,
+            },
           }
         );
         toast.success(
@@ -124,9 +128,11 @@ export default function AdminProducts() {
         // Create product
         await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/admin/products`,
+          productData,
           {
-            userId: auth.user?.id,
-            ...productData,
+            headers: {
+              Authorization: `Bearer ${auth.user?.token}`,
+            },
           }
         );
         toast.success(
@@ -194,11 +200,28 @@ export default function AdminProducts() {
       return;
     }
 
+    // Verify user is logged in
+    if (!auth.user?.id) {
+      toast.error("Please log in to perform this action");
+      return;
+    }
+
+    console.log(
+      "Deleting product with userId:",
+      auth.user.id,
+      "productId:",
+      productId
+    );
     const loadingToast = toast.loading("Deleting product...");
 
     try {
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/admin/products?userId=${auth.user?.id}&id=${productId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/admin/products?id=${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.user.token}`,
+          },
+        }
       );
       toast.success(
         t("product_deleted_successfully") || "Product deleted successfully!",
@@ -207,13 +230,26 @@ export default function AdminProducts() {
       fetchProducts();
     } catch (error: any) {
       console.error("Error deleting product:", error);
-      if (error.response?.status === 403) {
+      console.error("Error response:", error.response?.data);
+
+      if (error.response?.status === 401) {
+        toast.error(
+          error.response?.data?.error?.message ||
+            "Authentication failed. Please log in again.",
+          { id: loadingToast }
+        );
+        // Optionally redirect to login
+        // auth.logout();
+        // router.push("/admin/login");
+      } else if (error.response?.status === 403) {
         toast.error(t("admin_access_required") || "Admin access required", {
           id: loadingToast,
         });
       } else {
         toast.error(
-          t("operation_failed") || "Operation failed. Please try again.",
+          error.response?.data?.error?.message ||
+            t("operation_failed") ||
+            "Operation failed. Please try again.",
           { id: loadingToast }
         );
       }
