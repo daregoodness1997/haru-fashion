@@ -63,38 +63,38 @@ const Home: React.FC<Props> = ({ products }) => {
       <main id="main-content" className="-mt-20">
         {/* ===== Category Section ===== */}
         <section className="w-full h-auto py-10 border border-b-2 border-gray100">
-          <div className="app-max-width app-x-padding h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="w-full sm:col-span-2 lg:col-span-2">
-              <OverlayContainer
-                imgSrc="/bg-img/banner_minipage1.jpg"
-                imgSrc2="/bg-img/banner_minipage1-tablet.jpg"
-                imgAlt="New Arrivals"
-              >
-                <LinkButton
-                  href="/product-category/new-arrivals"
-                  extraClass="absolute bottom-10-per sm:right-10-per z-20"
-                >
-                  {t("new_arrivals")}
-                </LinkButton>
-              </OverlayContainer>
-            </div>
+          <div className="app-max-width app-x-padding h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="w-full">
               <OverlayContainer
-                imgSrc="/bg-img/banner_minipage2.jpg"
-                imgAlt="Women Collection"
+                imgSrc="/bg-img/bridal-corset.jpg"
+                imgSrc2="/bg-img/bridal-corset.jpg"
+                imgAlt="Bridal Corset"
               >
                 <LinkButton
-                  href="/product-category/women"
+                  href="/product-category/bridal-corset"
                   extraClass="absolute bottom-10-per z-20"
                 >
-                  {t("women_collection")}
+                  {t("bridal_corset")}
                 </LinkButton>
               </OverlayContainer>
             </div>
             <div className="w-full">
               <OverlayContainer
-                imgSrc="/bg-img/banner_minipage3.jpg"
-                imgAlt="Materials"
+                imgSrc="/bg-img/bridal-materials.jpg"
+                imgAlt="Bridal Materials"
+              >
+                <LinkButton
+                  href="/product-category/bridal-materials"
+                  extraClass="absolute bottom-10-per z-20"
+                >
+                  {t("bridal_materials")}
+                </LinkButton>
+              </OverlayContainer>
+            </div>
+            <div className="w-full">
+              <OverlayContainer
+                imgSrc="/bg-img/general-materials.jpg"
+                imgAlt="General Materials"
               >
                 <LinkButton
                   href="/product-category/material"
