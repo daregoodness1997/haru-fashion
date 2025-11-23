@@ -71,11 +71,12 @@ export default function AdminProducts() {
     formData.append("image", file);
 
     const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/upload-image?userId=${auth.user?.id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/upload-image`,
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${auth.user?.token}`,
         },
       }
     );

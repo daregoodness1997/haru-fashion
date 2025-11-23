@@ -50,11 +50,8 @@ export default async function handler(
   }
 
   try {
-    // Verify admin access using query parameter
-    const isAdmin = await verifyAdmin(
-      { ...req, body: { userId: req.query.userId } } as any,
-      res
-    );
+    // Verify admin access
+    const isAdmin = await verifyAdmin(req as any, res);
     if (!isAdmin) return;
 
     // Run multer middleware
@@ -70,7 +67,10 @@ export default async function handler(
     }
 
     // Upload to Cloudinary
-    const result = await uploadToCloudinary(file.buffer, "Shunapee Fashion House-fashion/products");
+    const result = await uploadToCloudinary(
+      file.buffer,
+      "Shunapee Fashion House-fashion/products"
+    );
 
     return res.status(200).json({
       success: true,
