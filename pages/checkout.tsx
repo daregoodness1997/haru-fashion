@@ -894,19 +894,11 @@ const ShoppingCart = () => {
                     <h2 className="text-xl font-bold">
                       {t("our_banking_details")}
                     </h2>
-                    <span className="uppercase block my-1">Sat Naing :</span>
+                    <span className="uppercase block my-1">Shunapee:</span>
 
                     <div className="flex justify-between w-full xl:w-1/2">
-                      <span className="text-sm font-bold">AYA Bank</span>
-                      <span className="text-base">20012345678</span>
-                    </div>
-                    <div className="flex justify-between w-full xl:w-1/2">
-                      <span className="text-sm font-bold">CB Bank</span>
-                      <span className="text-base">0010123456780959</span>
-                    </div>
-                    <div className="flex justify-between w-full xl:w-1/2">
-                      <span className="text-sm font-bold">KPay</span>
-                      <span className="text-base">095096051</span>
+                      <span className="text-sm font-bold">Opay </span>
+                      <span className="text-base">8066061271</span>
                     </div>
                   </div>
                 ) : (
