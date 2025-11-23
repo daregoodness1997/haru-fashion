@@ -37,13 +37,18 @@ const ServiceRequests = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
+    // Wait for auth to load before checking user
+    if (auth.loading) {
+      return;
+    }
+
     if (!auth.user?.isAdmin) {
       router.push("/");
       return;
     }
     fetchRequests();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth.user]);
+  }, [auth.user, auth.loading]);
 
   const fetchRequests = async () => {
     try {

@@ -43,13 +43,18 @@ export default function AdminOrders() {
   };
 
   useEffect(() => {
+    // Wait for auth to load before checking user
+    if (auth.loading) {
+      return;
+    }
+
     if (!auth.user) {
       router.push("/");
       return;
     }
     fetchOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth.user, currentPage, filterStatus]);
+  }, [auth.user, auth.loading, currentPage, filterStatus]);
 
   const handleStatusChange = async (orderId: number, newStatus: string) => {
     try {

@@ -24,6 +24,11 @@ export default function AdminOrderDetail() {
   const [trackingNumber, setTrackingNumber] = useState("");
 
   useEffect(() => {
+    // Wait for auth to load before checking user
+    if (auth.loading) {
+      return;
+    }
+
     if (!auth.user) {
       router.push("/");
       return;
@@ -33,7 +38,7 @@ export default function AdminOrderDetail() {
       fetchOrderDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, auth.user]);
+  }, [id, auth.user, auth.loading]);
 
   const fetchOrderDetails = async () => {
     try {
@@ -94,7 +99,9 @@ export default function AdminOrderDetail() {
 
   return (
     <div>
-      <Header title={`Order #${order.orderNumber} - Admin - Shunapee Fashion House Fashion`} />
+      <Header
+        title={`Order #${order.orderNumber} - Admin - Shunapee Fashion House Fashion`}
+      />
 
       <main id="main-content">
         {/* Breadcrumb */}

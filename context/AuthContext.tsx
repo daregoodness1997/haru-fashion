@@ -4,6 +4,7 @@ import React, { useState, useEffect, useContext, createContext } from "react";
 
 type authType = {
   user: null | User;
+  loading: boolean;
   register?: (
     email: string,
     fullname: string,
@@ -31,6 +32,7 @@ type authType = {
 
 const initialAuth: authType = {
   user: null,
+  loading: true,
 };
 
 const authContext = createContext<authType>(initialAuth);
@@ -60,6 +62,7 @@ export const useAuth = () => {
 // Provider hook that creates auth object and handles state
 function useProvideAuth() {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Load user from localStorage on mount
   useEffect(() => {
@@ -73,6 +76,7 @@ function useProvideAuth() {
         localStorage.removeItem("user");
       }
     }
+    setLoading(false);
   }, []);
 
   // Save user to localStorage whenever it changes
@@ -210,6 +214,7 @@ function useProvideAuth() {
   // Return the user object and auth methods
   return {
     user,
+    loading,
     register,
     login,
     forgotPassword,

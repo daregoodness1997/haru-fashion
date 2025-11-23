@@ -53,13 +53,18 @@ export default function AdminProducts() {
   };
 
   useEffect(() => {
+    // Wait for auth to load before checking user
+    if (auth.loading) {
+      return;
+    }
+
     if (!auth.user) {
       router.push("/");
       return;
     }
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth.user]);
+  }, [auth.user, auth.loading]);
 
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();

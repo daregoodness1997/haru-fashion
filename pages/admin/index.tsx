@@ -65,6 +65,11 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
+    // Wait for auth to load before checking user
+    if (auth.loading) {
+      return;
+    }
+
     // Check if user is admin
     if (!auth.user) {
       router.push("/");
@@ -76,7 +81,7 @@ export default function AdminDashboard() {
 
     fetchDashboardData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth.user, router]);
+  }, [auth.user, auth.loading, router]);
 
   if (!auth.user || loading) {
     return (
