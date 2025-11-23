@@ -1,9 +1,8 @@
 import { Html, Head, Main, NextScript } from "next/document";
 
 const title = "Shunapee Fashion House Fashion";
-const desc =
-  "Shunapee Fashion House Fashion e-commerce developed with Next.JS. Coded with 🖤 by Sat Naing (satnaing.dev).";
-const keywords = "Shunapee Fashion House Fashion, Online Shop, E-commerce, Sat Naing, NextJS";
+const desc = "Shunapee Fashion House Fashion e-commerce ";
+const keywords = "Shunapee Fashion House Fashion, Online Shop, E-commerce";
 
 export default function Document() {
   return (
@@ -38,9 +37,18 @@ export default function Document() {
         <link href="/favicons/favicon.ico" rel="shortcut icon" />
         <link href="/favicons/site.webmanifest" rel="manifest" />
 
-        <meta property="og:url" content="https://Shunapee Fashion House-fashion.vercel.app" />
-        <link rel="canonical" href="https://Shunapee Fashion House-fashion.vercel.app" />
-        <meta property="og:site_name" content="Shunapee Fashion House Fashion" />
+        <meta
+          property="og:url"
+          content="https://Shunapee Fashion House-fashion.vercel.app"
+        />
+        <link
+          rel="canonical"
+          href="https://Shunapee Fashion House-fashion.vercel.app"
+        />
+        <meta
+          property="og:site_name"
+          content="Shunapee Fashion House Fashion"
+        />
         <meta property="og:description" content={desc} key="og_description" />
         <meta property="og:title" content={title} key="og_title" />
         <meta
