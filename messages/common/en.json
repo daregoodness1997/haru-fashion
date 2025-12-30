@@ -30,11 +30,11 @@
     "privacy_policy": "Privacy Policy",
     "terms_conditions": "Terms & Conditions",
     "search_anything": "Search anything ...",
-    "address_full": "Uyo, Akwa Ibom State, Nigeria",
+    "address_full": "409 Nwaniba road, Uyo, Akwa Ibom, Nigeria",
     "address": {
       "detail": "Shunapee Fashion House",
-      "road": "Uyo, Akwa Ibom State",
-      "city": "Nigeria"
+      "road": "409 Nwaniba road, Uyo",
+      "city": "Akwa Ibom, Nigeria"
     },
     "phone_number": "+234 806 606 1271",
     "open_all_days": "Open All Days",
@@ -108,7 +108,7 @@
     "delivery_method": "Delivery Method",
     "total": "Total Amount",
     "your_order_received": "Your order has been received. ",
-    "bank_transfer_note": "Please send the bank slip screenshot by sending to our email (satnaingdev@gmail.com) or our Facebook page messenger after you've transferred the amount to our bank account.",
+    "bank_transfer_note": "Please send the bank slip screenshot by sending to our email (admin@shunapeefashion.com.ng) or our Facebook page messenger after you've transferred the amount to our bank account.",
     "cash_delivery_note": "Your purchased items will be delivered within a week.",
     "store_pickup_note": "You can pickup your purchased item(s) in our store within 7 days.",
     "thank_you_for_purchasing": " Thank you for purchasing with us.",
